@@ -1,0 +1,3 @@
+[submodule "deps/jedis"]
+	path = deps/jedis
+	url = git@github.com:ChannelIQ/jedis.git

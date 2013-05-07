@@ -1,4 +1,4 @@
-package com.ciq.qless.java.client;
+package com.ciq.qless.java.test.client;
 
 import static org.junit.Assert.fail;
 
