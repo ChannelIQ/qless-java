@@ -26,4 +26,12 @@
 			<version>2.2.0</version>
 		</dependency>
 	</dependencies>
+	<name>qless Java Client</name>
+	<url>http://github.com/ChannelIQ/qless-java</url>
+	<description>A Java client for the qless library</description>
+	<scm>
+		<url>scm:git:git@github.com:ChannelIQ/qless-java.git</url>
+		<connection>scm:git:git@github.com:ChannelIQ/qless-java.git</connection>
+		<developerConnection>scm:git:git@github.com:ChannelIQ/qless-java.git</developerConnection>
+	</scm>
 </project>
