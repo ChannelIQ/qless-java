@@ -25,6 +25,19 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-api</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<name>qless Java Client</name>
 	<url>http://github.com/ChannelIQ/qless-java</url>
