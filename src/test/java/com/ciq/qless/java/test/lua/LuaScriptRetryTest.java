@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
 
-public class LuaScriptRetryTest extends LuaScriptTest {
+public class LuaScriptRetryTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {
@@ -142,6 +143,7 @@ public class LuaScriptRetryTest extends LuaScriptTest {
 	}
 
 	@Test
+	@Ignore
 	public void testRetryWhereRemainingEqualsZero() {
 		// Show that it is a failure
 

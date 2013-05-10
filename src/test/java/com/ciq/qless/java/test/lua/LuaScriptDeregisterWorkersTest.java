@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.ciq.qless.java.lua.LuaScriptException;
 
-public class LuaScriptDeregisterWorkersTest extends LuaScriptTest {
+public class LuaScriptDeregisterWorkersTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

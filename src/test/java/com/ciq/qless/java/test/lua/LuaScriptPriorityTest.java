@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptPriorityTest extends LuaScriptTest {
+public class LuaScriptPriorityTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

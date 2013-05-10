@@ -14,7 +14,7 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptHeartbeatTest extends LuaScriptTest {
+public class LuaScriptHeartbeatTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

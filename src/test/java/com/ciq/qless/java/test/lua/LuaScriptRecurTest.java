@@ -16,7 +16,7 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptRecurTest extends LuaScriptTest {
+public class LuaScriptRecurTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

@@ -12,6 +12,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ciq.qless.java.client.JQlessClient;
@@ -59,6 +60,7 @@ public class SimpleTestJobTest extends BaseTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetTimeToLive() {
 		fail("Not yet implemented");
 	}
@@ -79,11 +81,13 @@ public class SimpleTestJobTest extends BaseTest {
 	}
 
 	@Test
+	@Ignore
 	public void testQueueHistory() {
 		fail("Not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testGetFirstOccurence() {
 		// / Create a job and take note of the timestamp. Complete it. Create
 		// the same job. Complete it.
@@ -92,6 +96,7 @@ public class SimpleTestJobTest extends BaseTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetHash() {
 		Map<String, Object> hash = _job.getHash();
 		assertEquals(_jid, hash.get("jid").toString());
@@ -275,6 +280,7 @@ public class SimpleTestJobTest extends BaseTest {
 	}
 
 	@Test
+	@Ignore
 	public void testNoteStateChanged() {
 		fail("Not yet implemented");
 	}

@@ -18,7 +18,7 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptWorkersTest extends LuaScriptTest {
+public class LuaScriptWorkersTest extends LuaScriptBaseTest {
 	private String jid1;
 	private String jid2;
 	private String jid3;

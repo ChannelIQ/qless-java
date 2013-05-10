@@ -15,7 +15,7 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptPopTest extends LuaScriptTest {
+public class LuaScriptPopTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

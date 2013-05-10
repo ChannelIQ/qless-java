@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.ciq.qless.java.lua.LuaScriptException;
 import com.ciq.qless.java.utils.JsonHelper;
 
-public class LuaScriptConfigTest extends LuaScriptTest {
+public class LuaScriptConfigTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {

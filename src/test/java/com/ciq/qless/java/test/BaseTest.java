@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class BaseTest {
+public abstract class BaseTest {
 	protected final String TEST_JID = "d1ecbfa0-48d7-47fd-affd-f96a75e46216";
 	protected final String TEST_QUEUE = "test-queue";
 	protected final String TEST_WORKER = "test-worker";

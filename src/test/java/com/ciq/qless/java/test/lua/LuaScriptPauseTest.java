@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.ciq.qless.java.lua.LuaScriptException;
 
-public class LuaScriptPauseTest extends LuaScriptTest {
+public class LuaScriptPauseTest extends LuaScriptBaseTest {
 
 	@Override
 	protected String scriptName() {
