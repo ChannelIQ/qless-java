@@ -15,6 +15,7 @@ import redis.clients.jedis.exceptions.JedisException;
 
 import com.ciq.qless.java.lua.LuaScript;
 import com.ciq.qless.java.lua.LuaScriptObject;
+import com.ciq.qless.java.queues.Queue;
 import com.ciq.qless.java.utils.ResponseFactory;
 
 public class JQlessClient {
@@ -62,6 +63,10 @@ public class JQlessClient {
 
 	public ClientQueues Queues() {
 		return _clientQueues;
+	}
+
+	public Queue Queue(String name) {
+		return _clientQueues.getNamedQueue(name);
 	}
 
 	public Config Config() {
