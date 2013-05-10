@@ -12,8 +12,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptTagsTest extends LuaScriptTest {
 
@@ -109,11 +110,11 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 
 		String tagJson = (String) _luaScript.callScript(this.scriptName(),
 				keys, args);
-		List<String> tags = parseList(tagJson);
+		List<String> tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		@SuppressWarnings("unchecked")
 		List<String> jobTags = (List<String>) job.get("tags");
@@ -150,13 +151,13 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		// Add the tags
 		String tagJson = (String) _luaScript.callScript(this.scriptName(),
 				keys, args);
-		List<String> tags = parseList(tagJson);
+		List<String> tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertTrue(tags.contains("test-tag-2"));
 
 		// Get the job
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		List<String> jobTags = (List<String>) job.get("tags");
 		assertTrue(jobTags.contains("test-tag"));
 		assertTrue(jobTags.contains("test-tag-2"));
@@ -165,13 +166,13 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		args = Arrays.asList("remove", jid, JQlessClient.getCurrentSeconds(),
 				"test-tag-2");
 		tagJson = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		tags = parseList(tagJson);
+		tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertFalse(tags.contains("test-tag-2"));
 
 		// Get the job
 		json = getJob(jid);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		jobTags = (List<String>) job.get("tags");
 		assertTrue(jobTags.contains("test-tag"));
 		assertFalse(jobTags.contains("test-tag-2"));
@@ -208,13 +209,13 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		// Add the tags
 		String tagJson = (String) _luaScript.callScript(this.scriptName(),
 				keys, args);
-		List<String> tags = parseList(tagJson);
+		List<String> tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertTrue(tags.contains("test-tag-2"));
 
 		// Get the job
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		List<String> jobTags = (List<String>) job.get("tags");
 		assertTrue(jobTags.contains("test-tag"));
 		assertTrue(jobTags.contains("test-tag-2"));
@@ -223,14 +224,14 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		args = Arrays.asList("remove", jid, JQlessClient.getCurrentSeconds(),
 				"test-tag-2");
 		tagJson = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		tags = parseList(tagJson);
+		tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertFalse(tags.contains("test-tag-2"));
 
 		// Get the job
 		args = Arrays.asList("get", "test-tag");
 		tagJson = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		Map<String, Object> getResults = parseMap(tagJson);
+		Map<String, Object> getResults = JsonHelper.parseMap(tagJson);
 		List<String> jids = (List<String>) getResults.get("jobs");
 
 		assertEquals("1", getResults.get("total").toString());
@@ -252,13 +253,13 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		// Add the tags
 		String tagJson = (String) _luaScript.callScript(this.scriptName(),
 				keys, args);
-		List<String> tags = parseList(tagJson);
+		List<String> tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertTrue(tags.contains("test-tag-2"));
 
 		// Get the job
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		List<String> jobTags = (List<String>) job.get("tags");
 		assertTrue(jobTags.contains("test-tag"));
 		assertTrue(jobTags.contains("test-tag-2"));
@@ -267,14 +268,15 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		args = Arrays.asList("remove", jid, JQlessClient.getCurrentSeconds(),
 				"test-tag-2");
 		tagJson = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		tags = parseList(tagJson);
+		tags = JsonHelper.parseList(tagJson);
 		assertTrue(tags.contains("test-tag"));
 		assertFalse(tags.contains("test-tag-2"));
 
 		// Get the job (and special handling for Lua Arrays
 		args = Arrays.asList("get", "test-tag-2");
 		tagJson = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		Map<String, Object> getResults = parseMap(fixArrayField(tagJson, "jobs"));
+		Map<String, Object> getResults = JsonHelper.parseMap(JsonHelper
+				.fixArrayField(tagJson, "jobs"));
 		List<String> jids = (List<String>) getResults.get("jobs");
 
 		assertEquals("0", getResults.get("total").toString());
@@ -302,7 +304,8 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		List<String> args = Arrays.asList("get", "common-tag", "0", "2");
 		String json = (String) _luaScript.callScript(this.scriptName(), keys,
 				args);
-		Map<String, Object> getResults = parseMap(fixArrayField(json, "jobs"));
+		Map<String, Object> getResults = JsonHelper.parseMap(JsonHelper
+				.fixArrayField(json, "jobs"));
 		List<String> pageOne = (List<String>) getResults.get("jobs");
 
 		assertEquals("4", getResults.get("total").toString());
@@ -311,7 +314,8 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		// Second page
 		args = Arrays.asList("get", "common-tag", "2", "2");
 		json = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		getResults = parseMap(fixArrayField(json, "jobs"));
+		getResults = JsonHelper
+				.parseMap(JsonHelper.fixArrayField(json, "jobs"));
 		List<String> pageTwo = (List<String>) getResults.get("jobs");
 
 		assertEquals("4", getResults.get("total").toString());
@@ -326,7 +330,7 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		assertTrue(jids.contains(jid4));
 
 		// Cleanup
-		removeJobs(Arrays.asList(jid1, jid2, jid3, jid4));
+		removeJobs(jid1, jid2, jid3, jid4);
 	}
 
 	@Test
@@ -347,7 +351,7 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		// Get the top results
 		String json = (String) _luaScript.callScript(this.scriptName(), keys,
 				args);
-		List<String> tags = parseList(json);
+		List<String> tags = JsonHelper.parseList(json);
 		assertTrue(tags.get(0).equals("common-tag"));
 		assertTrue(tags.get(1).equals("test-tag"));
 		assertFalse(tags.contains("test-tag-1"));
@@ -356,7 +360,7 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 
 		// Get the top results
 		json = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		tags = parseList(json);
+		tags = JsonHelper.parseList(json);
 
 		assertTrue(tags.contains("test-tag-1"));
 		assertTrue(tags.contains("test-tag-2"));
@@ -364,18 +368,6 @@ public class LuaScriptTagsTest extends LuaScriptTest {
 		assertTrue(tags.contains("test-tag-4"));
 
 		// Cleanup
-		removeJobs(Arrays.asList(jid1, jid2, jid3, jid4));
-	}
-
-	private void addTags(String jid, String... tags) throws LuaScriptException {
-		List<String> keys = new ArrayList<String>();
-		ArrayList<String> args = new ArrayList<String>(Arrays.asList("add",
-				jid, JQlessClient.getCurrentSeconds()));
-
-		for (String tag : tags) {
-			args.add(tag);
-		}
-
-		_luaScript.callScript(this.scriptName(), keys, args);
+		removeJobs(jid1, jid2, jid3, jid4);
 	}
 }

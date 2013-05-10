@@ -12,8 +12,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptRecurTest extends LuaScriptTest {
 
@@ -401,11 +402,11 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertTrue(job.size() > 0);
 		assertEquals(jid, job.get("jid").toString());
-		assertEquals("SimpleTestJob", job.get("klass").toString());
+		assertEquals(TEST_JOB, job.get("klass").toString());
 		assertEquals(60, job.get("interval"));
 		assertEquals(0, job.get("count"));
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
@@ -419,11 +420,11 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertTrue(job.size() > 0);
 		assertEquals(jid, job.get("jid").toString());
-		assertEquals("SimpleTestJob", job.get("klass").toString());
+		assertEquals(TEST_JOB, job.get("klass").toString());
 		assertEquals(60, job.get("interval"));
 		assertEquals(0, job.get("count"));
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
@@ -437,11 +438,11 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertTrue(job.size() > 0);
 		assertEquals(jid, job.get("jid").toString());
-		assertEquals("SimpleTestJob", job.get("klass").toString());
+		assertEquals(TEST_JOB, job.get("klass").toString());
 		assertEquals(0, job.get("priority"));
 		assertEquals(60, job.get("interval"));
 		assertEquals(0, job.get("count"));
@@ -457,7 +458,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 
 		// Reget the job
 		json = getRecurringJob(jid);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("AnotherTestJob", job.get("klass").toString());
 		assertEquals(100, job.get("priority"));
 
@@ -469,7 +470,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals(jid, job.get("jid").toString());
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
 		assertEquals("recur", job.get("state").toString());
@@ -483,7 +484,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 
 		// Reget the job
 		json = getRecurringJob(jid);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("another-queue", job.get("queue").toString());
 
 		// Test that this jid does not exist in test-queue, but does exist in
@@ -493,7 +494,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 				JQlessClient.getCurrentSeconds(), TEST_QUEUE);
 
 		json = (String) _luaScript.callScript("queues.lua", noKeys, queueArgs);
-		Map<String, Object> queueDetails = parseMap(json);
+		Map<String, Object> queueDetails = JsonHelper.parseMap(json);
 		for (String key : queueDetails.keySet()) {
 			if (!key.equals("name")) {
 				assertEquals(0, queueDetails.get(key));
@@ -504,7 +505,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 				"another-queue");
 
 		json = (String) _luaScript.callScript("queues.lua", noKeys, queueArgs);
-		queueDetails = parseMap(json);
+		queueDetails = JsonHelper.parseMap(json);
 		int totalJobs = 0;
 		for (String key : queueDetails.keySet()) {
 			if (!key.equals("name")) {
@@ -521,7 +522,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals(jid, job.get("jid").toString());
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
 		assertEquals("recur", job.get("state").toString());
@@ -530,7 +531,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		List<String> keys = new ArrayList<String>();
 		List<String> args = Arrays.asList("tag", jid, "test-tag", "test-tag-2");
 		json = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		List<String> tags = parseList(json);
+		List<String> tags = JsonHelper.parseList(json);
 		assertTrue(tags.contains("test-tag"));
 		assertTrue(tags.contains("test-tag-2"));
 
@@ -543,7 +544,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals(jid, job.get("jid").toString());
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
 		assertEquals("recur", job.get("state").toString());
@@ -556,6 +557,8 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 				args);
 
 		assertEquals("", result);
+
+		removeRecurringJob(jid);
 	}
 
 	@Test
@@ -563,7 +566,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals(jid, job.get("jid").toString());
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
 		assertEquals("recur", job.get("state").toString());
@@ -572,14 +575,14 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		List<String> keys = new ArrayList<String>();
 		List<String> args = Arrays.asList("tag", jid, "test-tag", "test-tag-2");
 		json = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		List<String> tags = parseList(json);
+		List<String> tags = JsonHelper.parseList(json);
 		assertTrue(tags.contains("test-tag"));
 		assertTrue(tags.contains("test-tag-2"));
 
 		// Remove tags
 		args = Arrays.asList("untag", jid, "test-tag-2");
 		json = (String) _luaScript.callScript(this.scriptName(), keys, args);
-		tags = parseList(json);
+		tags = JsonHelper.parseList(json);
 		assertTrue(tags.contains("test-tag"));
 		assertFalse(tags.contains("test-tag-2"));
 
@@ -592,7 +595,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 		String jid = addRecurringJob();
 
 		String json = getRecurringJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals(jid, job.get("jid").toString());
 		assertEquals(TEST_QUEUE, job.get("queue").toString());
 		assertEquals("recur", job.get("state").toString());
@@ -608,5 +611,7 @@ public class LuaScriptRecurTest extends LuaScriptTest {
 				args);
 
 		assertEquals("", result);
+
+		removeRecurringJob(jid);
 	}
 }

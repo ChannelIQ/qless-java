@@ -1,4 +1,4 @@
-package com.ciq.qless.java;
+package com.ciq.qless.java.lua;
 
 import java.io.IOException;
 import java.io.InputStream;

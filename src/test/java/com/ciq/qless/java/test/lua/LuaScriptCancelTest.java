@@ -11,8 +11,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
 
 public class LuaScriptCancelTest extends LuaScriptTest {
 
@@ -52,15 +52,13 @@ public class LuaScriptCancelTest extends LuaScriptTest {
 		String jid2 = UUID.randomUUID().toString();
 		addJob(jid2);
 
-		List<String> jids = Arrays.asList(jid1, jid2);
-
 		String result = getJob(jid1);
 		assertThat(result, not(""));
 
 		result = getJob(jid2);
 		assertThat(result, not(""));
 
-		removeJobs(jids);
+		removeJobs(jid1, jid2);
 
 		result = getJob(jid1);
 		assertEquals(result, "");
@@ -92,8 +90,7 @@ public class LuaScriptCancelTest extends LuaScriptTest {
 			System.out.println(ex.getMessage());
 			throw ex;
 		} finally {
-			List<String> jids = Arrays.asList(parentJID, dependentJID);
-			removeJobs(jids);
+			removeJobs(parentJID, dependentJID);
 		}
 	}
 
@@ -110,8 +107,7 @@ public class LuaScriptCancelTest extends LuaScriptTest {
 		String result2 = getJob(parentJID);
 		assertThat(result2, not(""));
 
-		List<String> jids = Arrays.asList(parentJID, dependentJID);
-		String removeResult = removeJobs(jids);
+		String removeResult = removeJobs(parentJID, dependentJID);
 		assertEquals(removeResult, "");
 	}
 }

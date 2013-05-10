@@ -10,8 +10,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
 
 public class LuaScriptJobsTest extends LuaScriptTest {
 
@@ -225,8 +225,7 @@ public class LuaScriptJobsTest extends LuaScriptTest {
 
 		assertTrue(jids.contains(jidParent));
 
-		removeJob(jidParent);
-		removeJobs(dependencies);
+		removeJobs(jidParent, jidChild, jidChild2);
 	}
 
 	@Test

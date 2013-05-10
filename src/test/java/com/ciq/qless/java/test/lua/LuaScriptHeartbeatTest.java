@@ -10,8 +10,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptHeartbeatTest extends LuaScriptTest {
 
@@ -106,7 +107,7 @@ public class LuaScriptHeartbeatTest extends LuaScriptTest {
 		_luaScript.callScript(this.scriptName(), keys, args);
 
 		json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		@SuppressWarnings("unchecked")
 		List<String> jobData = (List<String>) job.get("data");

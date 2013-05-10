@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
 
 public class LuaScriptRetryTest extends LuaScriptTest {
 
@@ -141,6 +141,7 @@ public class LuaScriptRetryTest extends LuaScriptTest {
 		removeJob(jid);
 	}
 
+	@Test
 	public void testRetryWhereRemainingEqualsZero() {
 		// Show that it is a failure
 

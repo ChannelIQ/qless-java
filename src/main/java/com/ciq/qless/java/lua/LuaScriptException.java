@@ -1,4 +1,4 @@
-package com.ciq.qless.java;
+package com.ciq.qless.java.lua;
 
 public class LuaScriptException extends Exception {
 	private static final long serialVersionUID = 225571035410690001L;

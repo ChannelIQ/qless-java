@@ -2,8 +2,10 @@ package com.ciq.qless.java.client;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import com.ciq.qless.java.Queue;
+import com.ciq.qless.java.queues.Queue;
+import com.ciq.qless.java.utils.ResponseFactory;
 
 public class ClientQueues {
 	public final JQlessClient _client;
@@ -12,12 +14,11 @@ public class ClientQueues {
 		this._client = client;
 	}
 
-	public int counts() {
-		// parse JSON
-		List<String> args = Arrays
-				.asList(JQlessClient.getCurrentSeconds());
+	public List<Map<String, Object>> counts() {
+		List<String> args = Arrays.asList(JQlessClient.getCurrentSeconds());
 
-		return (Integer) this._client.call(JQlessClient.Command.QUEUES, args);
+		return this._client.call(JQlessClient.Command.QUEUES, args).as(
+				ResponseFactory.QUEUES);
 	}
 
 	public Queue getNamedQueue(String queueName) {

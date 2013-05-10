@@ -10,8 +10,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptFailedTest extends LuaScriptTest {
 
@@ -63,7 +64,7 @@ public class LuaScriptFailedTest extends LuaScriptTest {
 		String json = (String) _luaScript.callScript(this.scriptName(), noKeys,
 				args);
 
-		Map<String, Object> failures = parseMap(json);
+		Map<String, Object> failures = JsonHelper.parseMap(json);
 		assertEquals(1, failures.get("total"));
 
 		List<Map<String, Object>> jobs = (List<Map<String, Object>>) failures
@@ -89,7 +90,7 @@ public class LuaScriptFailedTest extends LuaScriptTest {
 		String json = (String) _luaScript.callScript(this.scriptName(),
 				noValues, noValues);
 
-		Map<String, Object> failures = parseMap(json);
+		Map<String, Object> failures = JsonHelper.parseMap(json);
 		assertEquals(2, failures.get("test-group"));
 		assertEquals(1, failures.get("another-test-group"));
 
@@ -105,7 +106,7 @@ public class LuaScriptFailedTest extends LuaScriptTest {
 		// Pop the job to simulate that it is running (Only running jobs can be
 		// failed)
 		List<String> json = popJob();
-		Map<String, Object> job = parseMapFirstObject(json);
+		Map<String, Object> job = JsonHelper.parseMapFirstObject(json);
 		String jid = job.get("jid").toString();
 
 		// Fail the job

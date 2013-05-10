@@ -10,7 +10,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptGetTest extends LuaScriptTest {
 
@@ -51,10 +52,10 @@ public class LuaScriptGetTest extends LuaScriptTest {
 
 		System.out.println(json);
 
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertEquals(jid, job.get("jid").toString());
-		assertEquals("SimpleTestJob", job.get("klass").toString());
+		assertEquals(TEST_JOB, job.get("klass").toString());
 		assertEquals("waiting", job.get("state").toString());
 
 		removeJob(jid);

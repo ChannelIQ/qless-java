@@ -10,8 +10,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptTrackTest extends LuaScriptTest {
 
@@ -96,10 +97,10 @@ public class LuaScriptTrackTest extends LuaScriptTest {
 				emptyKeys, emptyKeys);
 
 		// Fix potential parsing issues upfront
-		json = fixArrayField(json, "jobs");
-		json = fixArrayField(json, "expired");
+		json = JsonHelper.fixArrayField(json, "jobs");
+		json = JsonHelper.fixArrayField(json, "expired");
 
-		Map<String, Object> tracked = parseMap(json);
+		Map<String, Object> tracked = JsonHelper.parseMap(json);
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> trackedJobs = (List<Map<String, Object>>) tracked
 				.get("jobs");

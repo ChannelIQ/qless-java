@@ -1,7 +1,5 @@
 package com.ciq.qless.java.test.jobs;
 
-import java.util.UUID;
-
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.Attributes;
 import com.ciq.qless.java.jobs.Job;
@@ -15,7 +13,13 @@ public class SimpleTestJob extends Job {
 	@Override
 	public void performWork() {
 		// Do something interesting
-		UUID jid = (UUID) this.getAttributes().getData().get("jid");
+		String jid = this.getAttributes().getJID();
+
+		try {
+			complete();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 
 }

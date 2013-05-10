@@ -10,8 +10,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptCompleteTest extends LuaScriptTest {
 
@@ -201,7 +202,7 @@ public class LuaScriptCompleteTest extends LuaScriptTest {
 		assertEquals("waiting", result);
 
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertEquals("waiting", job.get("state").toString());
 		assertEquals("next-queue", job.get("queue").toString());
@@ -230,7 +231,7 @@ public class LuaScriptCompleteTest extends LuaScriptTest {
 		assertEquals("scheduled", result);
 
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertEquals("waiting", job.get("state").toString());
 		assertEquals("next-queue", job.get("queue").toString());
@@ -272,12 +273,12 @@ public class LuaScriptCompleteTest extends LuaScriptTest {
 		assertEquals("waiting", result);
 
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertEquals("waiting", job.get("state").toString());
 		assertEquals("next-queue", job.get("queue").toString());
 
-		removeJobs(Arrays.asList(jid, jidChild1, jidChild2));
+		removeJobs(jid, jidChild1, jidChild2);
 	}
 
 	@Test
@@ -311,7 +312,7 @@ public class LuaScriptCompleteTest extends LuaScriptTest {
 		assertEquals("depends", result);
 
 		String json = getJob(jid);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 
 		assertEquals("depends", job.get("state").toString());
 		assertEquals("next-queue", job.get("queue").toString());
@@ -321,10 +322,10 @@ public class LuaScriptCompleteTest extends LuaScriptTest {
 		completeJob(jidChild2);
 
 		json = getJob(jid);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state").toString());
 		assertEquals("next-queue", job.get("queue").toString());
 
-		removeJobs(Arrays.asList(jid, jidChild1, jidChild2));
+		removeJobs(jid, jidChild1, jidChild2);
 	}
 }

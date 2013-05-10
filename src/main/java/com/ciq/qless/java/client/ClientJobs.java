@@ -3,9 +3,11 @@ package com.ciq.qless.java.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import com.ciq.qless.java.jobs.Job;
+import com.ciq.qless.java.jobs.BaseJob;
+import com.ciq.qless.java.utils.ResponseFactory;
 
 public class ClientJobs {
 	private final JQlessClient _client;
@@ -14,114 +16,95 @@ public class ClientJobs {
 		this._client = client;
 	}
 
-	public List<Object> complete() {
+	public List<String> complete() {
 		return complete(0, 25);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object> complete(int offset, int count) {
+	public List<String> complete(int offset, int count) {
 		List<String> args = Arrays.asList("complete", String.valueOf(offset),
 				String.valueOf(count));
 
-		return (List<Object>) this._client.call(JQlessClient.Command.COMPLETE,
-				args);
+		return this._client.call(JQlessClient.Command.JOBS, args).as(
+				ResponseFactory.JIDS);
 	}
 
-	public List<Job> tracked() {
-		// JSON parsing
-		String jobJSON = (String) this._client.call(JQlessClient.Command.TRACK,
-				new ArrayList<String>());
-
-		// Find results listed with 'jobs'
-
-		// Create new Jobs from JSON
-
-		List<Job> jobs = new ArrayList<Job>();
-		return jobs;
+	public List<BaseJob> tracked() {
+		return this._client.call(JQlessClient.Command.TRACK,
+				new ArrayList<String>()).as(ResponseFactory.TRACKEDJOBS,
+				this._client);
 	}
 
-	public void tagged(String tag) {
-		tagged(tag, 0, 25);
+	public List<String> tagged(String tag) {
+		return tagged(tag, 0, 25);
 	}
 
-	public void tagged(String tag, int offset, int count) {
-		// Parse the JSON
+	public List<String> tagged(String tag, int offset, int count) {
 		List<String> args = Arrays.asList("get", tag, String.valueOf(offset),
 				String.valueOf(count));
 
-		String json = (String) this._client
-				.call(JQlessClient.Command.TAG, args);
+		return this._client.call(JQlessClient.Command.TAG, args).as(
+				ResponseFactory.TAGGEDJIDS);
 	}
 
 	/*
-	 * Return the first 25 failed jobs
+	 * Show all known failure groups
 	 */
-	public List<Job> failed() {
-		return failed("");
+	public Map<String, Object> failed() {
+		return this._client.call(JQlessClient.Command.FAILED,
+				new ArrayList<String>()).as(ResponseFactory.FAILS);
 	}
 
-	public List<Job> failed(String tag) {
-		return failed(tag, 0, 25);
+	/*
+	 * Return the first 25 failed jobs by Group
+	 */
+	public List<BaseJob> failedByGroup(String tag) {
+		return failedByGroup(tag, 0, 25);
 	}
 
 	/*
 	 * Return failed jobs from start with a count of limit
 	 */
-	public List<Job> failed(String tag, int start, int limit) {
+	public List<BaseJob> failedByGroup(String tag, int start, int limit) {
 		if (tag != null && tag.length() > 0) {
-			// JSON me
 			List<String> args = Arrays.asList(tag, String.valueOf(start),
 					String.valueOf(limit));
 
-			String jobsJSON = (String) this._client.call(
-					JQlessClient.Command.FAILED, args);
-
-			// Pull all the jobs out and create new Jobs via Job Builder
-
-			List<Job> jobs = new ArrayList<Job>();
-
-			return jobs;
-
+			return this._client.call(JQlessClient.Command.FAILED, args).as(
+					ResponseFactory.FAILEDJOBS, this._client);
 		} else {
-			// JSON me
-			String jobsJSON = (String) this._client.call(
-					JQlessClient.Command.FAILED, new ArrayList<String>());
-
-			List<Job> jobs = new ArrayList<Job>();
-
-			return jobs;
+			throw new IllegalArgumentException("Tag must be supplied");
 		}
-
 	}
 
-	public Job getJob(UUID id) {
+	public BaseJob getJob(UUID id) throws QlessClientException {
+		return getJob(id.toString());
+	}
+
+	public BaseJob getJob(String jid) throws QlessClientException {
 		// try to get a single job
-		List<String> args = Arrays.asList(id.toString());
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(jid);
 
-		String results = (String) this._client.call(JQlessClient.Command.GET,
-				args);
+		BaseJob job = this._client.call(JQlessClient.Command.GET, args).as(
+				ResponseFactory.JOB, this._client);
 
+		// TODO: CHECK THIS LOGIC
 		// if fails
-		if (results == null || results.length() == 0) {
+		if (job == null) {
 			// try to get a recurring job
 			args.add(0, "get");
 
-			results = (String) this._client.call(JQlessClient.Command.RECUR,
-					args);
+			job = this._client.call(JQlessClient.Command.RECUR, args).as(
+					ResponseFactory.RECURRINGJOB, this._client);
 
-			// if fails return null;
-			if (results == null || results.length() == 0) {
-				return null;
+			if (job != null) {
+				return job;
 			}
 
-			// otherwise return new RecurringJob(this._client,
-			// JSON.parse(results));
-
+			throw new QlessClientException("Job " + jid + " is unknown");
 		}
 
-		// otherwise return new Job(this._client, JSON.parse(results));
-
-		return null;
+		return job;
 	}
-
 }

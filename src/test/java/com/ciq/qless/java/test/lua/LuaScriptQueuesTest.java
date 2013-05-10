@@ -12,8 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptQueuesTest extends LuaScriptTest {
 	private String jid1;
@@ -83,7 +84,7 @@ public class LuaScriptQueuesTest extends LuaScriptTest {
 		String json = (String) _luaScript.callScript(this.scriptName(), noKeys,
 				args);
 
-		Map<String, Object> queueDetails = parseMap(json);
+		Map<String, Object> queueDetails = JsonHelper.parseMap(json);
 
 		assertEquals(TEST_QUEUE, queueDetails.get("name").toString());
 		assertEquals("1", queueDetails.get("running").toString());
@@ -98,7 +99,7 @@ public class LuaScriptQueuesTest extends LuaScriptTest {
 		String json = (String) _luaScript.callScript(this.scriptName(), noKeys,
 				args);
 
-		List<Map<String, Object>> queueDetails = parseList(json);
+		List<Map<String, Object>> queueDetails = JsonHelper.parseList(json);
 
 		for (Map<String, Object> queue : queueDetails) {
 			if (queue.get("name").equals(TEST_QUEUE)) {

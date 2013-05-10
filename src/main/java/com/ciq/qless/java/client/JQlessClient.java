@@ -5,21 +5,18 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisException;
 
-import com.ciq.qless.java.Config;
-import com.ciq.qless.java.LuaScript;
+import com.ciq.qless.java.lua.LuaScript;
+import com.ciq.qless.java.lua.LuaScriptObject;
+import com.ciq.qless.java.utils.ResponseFactory;
 
-/*
- * Consider passing in a JedisPool instead of a JedisClient, that way we could spin up/down the instances
- * as needed by the JQlessClient.  May need refactoring later
- */
 public class JQlessClient {
 	private final Jedis _jedis;
 	private final Config _config;
@@ -55,32 +52,38 @@ public class JQlessClient {
 		_scriptRunner = new LuaScript(this._jedis);
 	}
 
-	public ClientJobs getJobs() {
+	public ClientJobs Jobs() {
 		return _clientJobs;
 	}
 
-	public ClientWorkers getWorkers() {
+	public ClientWorkers Workers() {
 		return _clientWorkers;
 	}
 
-	public ClientQueues getQueues() {
+	public ClientQueues Queues() {
 		return _clientQueues;
+	}
+
+	public Config Config() {
+		return _config;
 	}
 
 	public int getQueueLength(String name) {
 		int count = 0;
 		try {
 			Transaction trans = this._jedis.multi();
-			this._jedis.zcard("q1:q:" + name + "-locks");
-			this._jedis.zcard("q1:q:" + name + "-work");
-			this._jedis.zcard("q1:q:" + name + "-scheduled");
+			trans.zcard("ql:q:" + name + "-locks");
+			trans.zcard("ql:q:" + name + "-work");
+			trans.zcard("ql:q:" + name + "-scheduled");
 			List<Object> allItems = trans.exec();
 
 			for (Object obj : allItems) {
 				count += Integer.parseInt(obj.toString());
 			}
 		} catch (JedisException je) {
-			// log this shit
+			System.out.println(je.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 
 		return count;
@@ -94,68 +97,45 @@ public class JQlessClient {
 		this._config.set(string, value);
 	}
 
-	public void track(UUID jid) {
-		List<String> params = Arrays.asList("track", jid.toString(),
-				getCurrentSeconds());
+	public boolean track(String jid) {
+		List<String> params = Arrays.asList("track", jid, getCurrentSeconds());
 
-		this.call(Command.TRACK, params);
+		return this.call(Command.TRACK, params).as(ResponseFactory.BOOLEAN);
 	}
 
-	public void untrack(UUID jid) {
-		List<String> params = Arrays.asList("untrack", jid.toString(),
-				getCurrentSeconds());
+	public boolean untrack(String jid) {
+		List<String> params = Arrays
+				.asList("untrack", jid, getCurrentSeconds());
 
-		this.call(Command.TRACK, params);
+		return this.call(Command.TRACK, params).as(ResponseFactory.BOOLEAN);
 	}
 
-	public String tags() {
+	public List<String> tags() {
 		return tags(0, 100);
 	}
 
-	public String tags(int offset, int count) {
+	public List<String> tags(int offset, int count) {
 		List<String> params = Arrays.asList("top", String.valueOf(offset),
 				String.valueOf(count));
 
-		// TODO: Return via JSON
-		this.call(Command.TAG, params);
-
-		return "";
+		return this.call(Command.TAG, params).as(ResponseFactory.TAGS);
 	}
 
-	public Object deRegisterWorkers(List<String> workerNames) {
-		return this.call(Command.DEREGISTER_WORKER, workerNames);
+	public void deRegisterWorkers(String... workerNames) {
+		ArrayList<String> args = new ArrayList<String>();
+		for (String worker : workerNames) {
+			args.add(worker);
+		}
+		this.call(Command.DEREGISTER_WORKERS, args);
 	}
 
-	public Object cancel(List<String> jids) {
-		return this.call(Command.CANCEL, jids);
-	}
-
-	// EVENTS SECTION - this will require another instance of Jedis running in
-	// the background to fully support eventing
-
-	public static enum Command {
-		CANCEL, CONFIG, COMPLETE, DEPENDS, FAIL, FAILED, GET, HEARTBEAT, JOBS, PEEK, POP, PRIORITY, PUT, QUEUES, RECUR, RETRY, STATS, TAG, TRACK, WORKERS, PAUSE, UNPAUSE, DEREGISTER_WORKER;
-
-		Command() {
+	public void cancel(String... jids) {
+		ArrayList<String> args = new ArrayList<String>();
+		for (String jid : jids) {
+			args.add(jid);
 		}
 
-		public String scriptName() {
-			return this.toString().toLowerCase() + ".lua";
-		}
-	}
-
-	public Object call(Command command, List<String> args) {
-		return this.call(command, new ArrayList<String>(), args);
-	}
-
-	public Object call(Command command, List<String> keys, List<String> args) {
-		try {
-			return this._scriptRunner.callScript(command.scriptName(), keys,
-					args);
-		} catch (Exception ex) {
-			System.out.println("Problem: " + ex.getMessage());
-			return "";
-		}
+		this.call(Command.CANCEL, args);
 	}
 
 	public static String getMachineName() {
@@ -167,7 +147,37 @@ public class JQlessClient {
 	}
 
 	public static String getCurrentSeconds() {
-		return String
-				.valueOf(LocalDateTime.now().toDateTime().getMillis() / 1000);
+		return String.valueOf(LocalDateTime.now(DateTimeZone.UTC).toDateTime()
+				.getMillis() / 1000);
+	}
+
+	// EVENTS SECTION - this will require another instance of Jedis running in
+	// the background to fully support eventing
+
+	public static enum Command {
+		CANCEL, CONFIG, COMPLETE, DEPENDS, FAIL, FAILED, GET, HEARTBEAT, JOBS, PEEK, POP, PRIORITY, PUT, QUEUES, RECUR, RETRY, STATS, TAG, TRACK, WORKERS, PAUSE, UNPAUSE, DEREGISTER_WORKERS;
+
+		Command() {
+		}
+
+		public String scriptName() {
+			return this.toString().toLowerCase() + ".lua";
+		}
+	}
+
+	public LuaScriptObject call(Command command, List<String> args) {
+		return this.call(command, new ArrayList<String>(), args);
+	}
+
+	public LuaScriptObject call(Command command, List<String> keys,
+			List<String> args) {
+		try {
+			Object o = this._scriptRunner.callScript(command.scriptName(),
+					keys, args);
+			return new LuaScriptObject(o);
+		} catch (Exception ex) {
+			System.out.println("Problem: " + ex.getMessage());
+			return new LuaScriptObject(new Object());
+		}
 	}
 }

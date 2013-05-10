@@ -2,6 +2,9 @@ package com.ciq.qless.java.client;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import com.ciq.qless.java.utils.ResponseFactory;
 
 public class ClientWorkers {
 	public final JQlessClient _client;
@@ -10,19 +13,18 @@ public class ClientWorkers {
 		this._client = client;
 	}
 
-	public int count() {
-		// parse JSON
-		List<String> args = Arrays
-				.asList(JQlessClient.getCurrentSeconds());
+	public List<Map<String, Object>> counts() {
+		List<String> args = Arrays.asList(JQlessClient.getCurrentSeconds());
 
-		return (Integer) this._client.call(JQlessClient.Command.WORKERS, args);
+		return this._client.call(JQlessClient.Command.WORKERS, args).as(
+				ResponseFactory.WORKERS);
 	}
 
-	public String getWorkersByName(String name) {
-		// parse JSON
-		List<String> args = Arrays.asList(
-				JQlessClient.getCurrentSeconds(), name);
+	public Map<String, Object> getWorkersByName(String name) {
+		List<String> args = Arrays.asList(JQlessClient.getCurrentSeconds(),
+				name);
 
-		return (String) this._client.call(JQlessClient.Command.WORKERS, args);
+		return this._client.call(JQlessClient.Command.WORKERS, args).as(
+				ResponseFactory.WORKER);
 	}
 }

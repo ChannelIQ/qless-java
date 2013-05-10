@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
+import com.ciq.qless.java.lua.LuaScriptException;
 
 public class LuaScriptUnpauseTest extends LuaScriptTest {
 

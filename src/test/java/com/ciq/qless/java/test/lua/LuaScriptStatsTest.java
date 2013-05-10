@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptStatsTest extends LuaScriptTest {
 
@@ -61,7 +61,7 @@ public class LuaScriptStatsTest extends LuaScriptTest {
 	@Test
 	public void testStatsReturnSuccessful() throws LuaScriptException {
 		String jid = addNewTestJob();
-		String jid2 = addJob(UUID.randomUUID().toString());
+		String jid2 = addJob();
 
 		// Simulate Work
 		popJob();
@@ -74,7 +74,7 @@ public class LuaScriptStatsTest extends LuaScriptTest {
 				args);
 
 		System.out.println(json);
-		Map<String, Object> stats = parseMap(json);
+		Map<String, Object> stats = JsonHelper.parseMap(json);
 
 		assertTrue(stats.containsKey("retries"));
 		assertTrue(stats.containsKey("failed"));

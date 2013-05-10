@@ -1,10 +1,12 @@
 package com.ciq.qless.java.jobs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.utils.ResponseFactory;
 
 public abstract class RecurringJob extends BaseJob {
 	private int _interval;
@@ -21,10 +23,12 @@ public abstract class RecurringJob extends BaseJob {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "priority", String.valueOf(priority));
 
-		String retVal = (String) this._client.call(JQlessClient.Command.RECUR,
-				args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_attributes.setPriority(priority);
+		if (success) {
+			_attributes.setPriority(priority);
+		}
 	}
 
 	public int getRetries() {
@@ -35,10 +39,12 @@ public abstract class RecurringJob extends BaseJob {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "retries", String.valueOf(retries));
 
-		String retVal = (String) this._client.call(JQlessClient.Command.RECUR,
-				args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_attributes.setRetries(retries);
+		if (success) {
+			_attributes.setRetries(retries);
+		}
 	}
 
 	public int getInterval() {
@@ -49,10 +55,12 @@ public abstract class RecurringJob extends BaseJob {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "interval", String.valueOf(interval));
 
-		String retVal = (String) this._client.call(JQlessClient.Command.RECUR,
-				args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_interval = interval;
+		if (success) {
+			_interval = interval;
+		}
 	}
 
 	public void setData(Map<String, Object> data) {
@@ -62,30 +70,40 @@ public abstract class RecurringJob extends BaseJob {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "data", dataJSON);
 
-		this._client.call(JQlessClient.Command.RECUR, args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_attributes.setData(data);
+		if (success) {
+			_attributes.setData(data);
+		}
 	}
 
 	public void setKlassName(String klassName) {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "klass", klassName);
 
-		String retVal = (String) this._client.call(JQlessClient.Command.RECUR,
-				args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_attributes.setKlassName(klassName);
+		if (success) {
+			_attributes.setKlassName(klassName);
+		}
 	}
 
+	@Override
 	public void move(String newQueue) {
 		List<String> args = Arrays.asList("update", _attributes.getJID()
 				.toString(), "queue", newQueue);
 
-		this._client.call(JQlessClient.Command.RECUR, args);
+		boolean success = this._client.call(JQlessClient.Command.RECUR, args)
+				.as(ResponseFactory.BOOLEAN);
 
-		_attributes.setQueueName(newQueue);
+		if (success) {
+			_attributes.setQueueName(newQueue);
+		}
 	}
 
+	@Override
 	public void cancel() {
 		List<String> args = Arrays.asList("off", _attributes.getJID()
 				.toString());
@@ -93,19 +111,29 @@ public abstract class RecurringJob extends BaseJob {
 		this._client.call(JQlessClient.Command.RECUR, args);
 	}
 
-	public void tag(List<String> tags) {
-		List<String> args = Arrays.asList("tag", _attributes.getJID()
-				.toString());
-		args.addAll(tags);
+	@Override
+	public List<String> tag(String... tags) {
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("tag");
+		args.add(_attributes.getJID());
+		for (String tag : tags) {
+			args.add(tag);
+		}
 
-		this._client.call(JQlessClient.Command.RECUR, args);
+		return this._client.call(JQlessClient.Command.RECUR, args).as(
+				ResponseFactory.TAGS);
 	}
 
-	public void untag(List<String> tags) {
-		List<String> args = Arrays.asList("untag", _attributes.getJID()
-				.toString());
-		args.addAll(tags);
+	@Override
+	public List<String> untag(String... tags) {
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("untag");
+		args.add(_attributes.getJID());
+		for (String tag : tags) {
+			args.add(tag);
+		}
 
-		this._client.call(JQlessClient.Command.RECUR, args);
+		return this._client.call(JQlessClient.Command.RECUR, args).as(
+				ResponseFactory.TAGS);
 	}
 }

@@ -10,8 +10,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptUnfailTest extends LuaScriptTest {
 
@@ -80,7 +81,7 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 
 		// Get job and validate
 		String json = getJob(jidFailed);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("failed", job.get("state"));
 		assertEquals(TEST_QUEUE, job.get("queue"));
 		Map<String, Object> failure = (Map<String, Object>) job.get("failure");
@@ -96,7 +97,7 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 
 		// Now get the job again and verify status and queue
 		json = getJob(jidFailed);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		System.out.println(json);
 		assertEquals("new-queue", job.get("queue"));
 		assertEquals("waiting", job.get("state"));
@@ -118,7 +119,7 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 		// Get job jid and validate
 		String json = getJob(jidFailed);
 		System.out.println(json);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("failed", job.get("state"));
 		assertEquals(TEST_QUEUE, job.get("queue"));
 		Map<String, Object> failure = (Map<String, Object>) job.get("failure");
@@ -127,7 +128,7 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 		// Get job jid2 and validate
 		json = getJob(jidFailed2);
 		System.out.println(json);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("failed", job.get("state"));
 		assertEquals(TEST_QUEUE, job.get("queue"));
 		failure = (Map<String, Object>) job.get("failure");
@@ -143,14 +144,14 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 
 		// Now get the job (jid) again and verify status and queue
 		json = getJob(jidFailed);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		System.out.println(json);
 		assertEquals("new-queue", job.get("queue"));
 		assertEquals("waiting", job.get("state"));
 
 		// Now get the job (jid2) again and verify status and queue
 		json = getJob(jidFailed2);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		System.out.println(json);
 		assertEquals("new-queue", job.get("queue"));
 		assertEquals("waiting", job.get("state"));
@@ -165,7 +166,7 @@ public class LuaScriptUnfailTest extends LuaScriptTest {
 		// failed)
 		List<String> poppedJob = popJob();
 
-		Map<String, Object> job = parseMapFirstObject(poppedJob);
+		Map<String, Object> job = JsonHelper.parseMapFirstObject(poppedJob);
 
 		// Fail the job
 		List<String> emptyValues = new ArrayList<String>();

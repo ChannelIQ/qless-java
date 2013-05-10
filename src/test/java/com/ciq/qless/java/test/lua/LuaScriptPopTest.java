@@ -11,8 +11,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptPopTest extends LuaScriptTest {
 
@@ -102,7 +103,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		List<String> json = (List<String>) _luaScript.callScript(
 				this.scriptName(), keys, args);
 
-		Map<String, Object> jobs = parseMapFirstObject(json);
+		Map<String, Object> jobs = JsonHelper.parseMapFirstObject(json);
 
 		assertTrue(json.size() == 1);
 		if (jobs.get("jid").equals(jid1)) {
@@ -111,9 +112,9 @@ public class LuaScriptPopTest extends LuaScriptTest {
 			assertEquals(jid2, jobs.get("jid"));
 
 			String jobJson = getJob(jid1);
-			Map<String, Object> job1 = parseMap(jobJson);
+			Map<String, Object> job1 = JsonHelper.parseMap(jobJson);
 			jobJson = getJob(jid2);
-			Map<String, Object> job2 = parseMap(jobJson);
+			Map<String, Object> job2 = JsonHelper.parseMap(jobJson);
 
 			assertEquals(((List<Map<String, Object>>) (job1.get("history")))
 					.get(0).get("put"),
@@ -144,7 +145,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		List<String> json = (List<String>) _luaScript.callScript(
 				this.scriptName(), keys, args);
 
-		Map<String, Object> jobs = parseMapFirstObject(json);
+		Map<String, Object> jobs = JsonHelper.parseMapFirstObject(json);
 
 		assertTrue(json.size() == 1);
 		assertEquals(jid2, jobs.get("jid"));
@@ -167,7 +168,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		List<String> json = (List<String>) _luaScript.callScript(
 				this.scriptName(), keys, args);
 
-		List<Map> jobs = parseList(json, List.class, Map.class);
+		List<Map> jobs = JsonHelper.parseList(json, List.class, Map.class);
 
 		assertTrue(jobs.size() == 2);
 
@@ -197,7 +198,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		List<String> json = (List<String>) _luaScript.callScript(
 				this.scriptName(), keys, args);
 
-		Map<String, Object> jobs = parseMapFirstObject(json);
+		Map<String, Object> jobs = JsonHelper.parseMapFirstObject(json);
 
 		assertTrue(json.size() == 1);
 		if (jobs.get("jid").equals(jid1)) {
@@ -206,9 +207,9 @@ public class LuaScriptPopTest extends LuaScriptTest {
 			assertEquals(jid2, jobs.get("jid"));
 
 			String jobJson = getJob(jid1);
-			Map<String, Object> job1 = parseMap(jobJson);
+			Map<String, Object> job1 = JsonHelper.parseMap(jobJson);
 			jobJson = getJob(jid2);
-			Map<String, Object> job2 = parseMap(jobJson);
+			Map<String, Object> job2 = JsonHelper.parseMap(jobJson);
 
 			assertEquals(((List<Map<String, Object>>) (job1.get("history")))
 					.get(0).get("put"),
@@ -220,7 +221,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		json = (List<String>) _luaScript.callScript(this.scriptName(), keys,
 				args);
 
-		jobs = parseMapFirstObject(json);
+		jobs = JsonHelper.parseMapFirstObject(json);
 
 		assertTrue(json.size() == 1);
 		if (jobs.get("jid").equals(jid2)) {
@@ -229,9 +230,9 @@ public class LuaScriptPopTest extends LuaScriptTest {
 			assertEquals(jid1, jobs.get("jid"));
 
 			String jobJson = getJob(jid1);
-			Map<String, Object> job1 = parseMap(jobJson);
+			Map<String, Object> job1 = JsonHelper.parseMap(jobJson);
 			jobJson = getJob(jid2);
-			Map<String, Object> job2 = parseMap(jobJson);
+			Map<String, Object> job2 = JsonHelper.parseMap(jobJson);
 
 			assertEquals(((List<Map<String, Object>>) (job1.get("history")))
 					.get(0).get("put"),
@@ -260,7 +261,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 		List<String> json = (List<String>) _luaScript.callScript(
 				this.scriptName(), keys, args);
 
-		Map<String, Object> jobs = parseMapFirstObject(json);
+		Map<String, Object> jobs = JsonHelper.parseMapFirstObject(json);
 
 		assertTrue(json.size() == 1);
 		if (jobs.get("jid").equals(jid1)) {
@@ -269,9 +270,9 @@ public class LuaScriptPopTest extends LuaScriptTest {
 			assertEquals(jid2, jobs.get("jid"));
 
 			String jobJson = getJob(jid1);
-			Map<String, Object> job1 = parseMap(jobJson);
+			Map<String, Object> job1 = JsonHelper.parseMap(jobJson);
 			jobJson = getJob(jid2);
-			Map<String, Object> job2 = parseMap(jobJson);
+			Map<String, Object> job2 = JsonHelper.parseMap(jobJson);
 
 			assertEquals(((List<Map<String, Object>>) (job1.get("history")))
 					.get(0).get("put"),
@@ -294,7 +295,7 @@ public class LuaScriptPopTest extends LuaScriptTest {
 
 		String json = (String) _luaScript.callScript("queues.lua", noKeys,
 				queueArgs);
-		Map<String, Object> queueDetails = parseMap(json);
+		Map<String, Object> queueDetails = JsonHelper.parseMap(json);
 
 		assertEquals(TEST_QUEUE, queueDetails.get("name").toString());
 		assertEquals(waitCount, queueDetails.get("waiting").toString());

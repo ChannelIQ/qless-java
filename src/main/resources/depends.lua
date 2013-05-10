@@ -27,7 +27,6 @@ if ARGV[3] == 'on' then
 		if (state and state ~= 'complete') then
 			redis.call('sadd', 'ql:j:' .. j .. '-dependents'  , jid)
 			redis.call('sadd', 'ql:j:' .. jid .. '-dependencies', j)
-			-- Added to correctly support newly dependent jobs	
 			redis.call('zadd', 'ql:q:' .. q .. '-depends', now, jid)
 			redis.call('hset', 'ql:j:' .. jid, 'state', 'depends')
 		end

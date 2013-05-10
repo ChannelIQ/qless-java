@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 public class Attributes {
@@ -54,20 +55,24 @@ public class Attributes {
 		setRetries(5);
 		setRetriesRemaining(5);
 		setFailure(new HashMap<String, Object>());
-		setHistory(new HashMap<String, Object>());
-		setDependencies(new ArrayList<Object>());
-		setDependents(new ArrayList<Object>());
+		setHistory(new ArrayList<HashMap<String, Object>>());
+		setDependencies(new ArrayList<String>());
+		setDependents(new ArrayList<String>());
 	}
 
 	public Map<String, Object> getHash() {
 		return _attributes;
 	}
 
-	public UUID getJID() {
-		return (UUID) _attributes.get("jid");
+	public String getJID() {
+		return _attributes.get("jid").toString();
 	}
 
 	public void setJID(UUID jid) {
+		_attributes.put("jid", jid.toString());
+	}
+
+	public void setJID(String jid) {
 		_attributes.put("jid", jid);
 	}
 
@@ -114,7 +119,8 @@ public class Attributes {
 	}
 
 	public LocalDateTime getExpiresAt() {
-		return (LocalDateTime) _attributes.get("expires");
+		return new LocalDateTime(Long.valueOf(_attributes.get("expires")
+				.toString()), DateTimeZone.UTC);
 	}
 
 	public void setExpiresAt(LocalDateTime expiresAt) {
@@ -171,29 +177,29 @@ public class Attributes {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getHistory() {
-		return (Map<String, Object>) _attributes.get("history");
+	public List<Map<String, Object>> getHistory() {
+		return (List<Map<String, Object>>) _attributes.get("history");
 	}
 
-	public void setHistory(Map<String, Object> history) {
+	public void setHistory(List<HashMap<String, Object>> history) {
 		_attributes.put("history", history);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object> getDependencies() {
-		return (List<Object>) _attributes.get("dependencies");
+	public List<String> getDependencies() {
+		return (List<String>) _attributes.get("dependencies");
 	}
 
-	public void setDependencies(List<Object> dependencies) {
+	public void setDependencies(List<String> dependencies) {
 		_attributes.put("dependencies", dependencies);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object> getDependents() {
-		return (List<Object>) _attributes.get("dependents");
+	public List<String> getDependents() {
+		return (List<String>) _attributes.get("dependents");
 	}
 
-	public void setDependents(List<Object> dependents) {
+	public void setDependents(List<String> dependents) {
 		_attributes.put("dependents", dependents);
 	}
 

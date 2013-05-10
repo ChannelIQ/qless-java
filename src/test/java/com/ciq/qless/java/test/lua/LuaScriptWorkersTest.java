@@ -14,8 +14,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptWorkersTest extends LuaScriptTest {
 	private String jid1;
@@ -47,7 +48,8 @@ public class LuaScriptWorkersTest extends LuaScriptTest {
 		popJob();
 		popJob();
 		List<String> jsonList = popJob("another-worker");
-		final Map<String, Object> job = parseMapFirstObject(jsonList);
+		final Map<String, Object> job = JsonHelper
+				.parseMapFirstObject(jsonList);
 		anotherWorkerJID = job.get("jid").toString();
 		testWorkerJobs.remove(anotherWorkerJID);
 	}
@@ -92,10 +94,10 @@ public class LuaScriptWorkersTest extends LuaScriptTest {
 
 		String json = (String) _luaScript.callScript(this.scriptName(), noKeys,
 				args);
-		json = fixArrayField(json, "jobs");
-		json = fixArrayField(json, "stalled");
+		json = JsonHelper.fixArrayField(json, "jobs");
+		json = JsonHelper.fixArrayField(json, "stalled");
 
-		Map<String, Object> workerJobs = parseMap(json);
+		Map<String, Object> workerJobs = JsonHelper.parseMap(json);
 
 		@SuppressWarnings("unchecked")
 		List<String> jobs = (List<String>) workerJobs.get("jobs");
@@ -112,9 +114,9 @@ public class LuaScriptWorkersTest extends LuaScriptTest {
 
 		String json = (String) _luaScript.callScript(this.scriptName(), noKeys,
 				args);
-		json = fixArrayField(json, "jobs");
-		json = fixArrayField(json, "stalled");
-		List<Map<String, Object>> workers = parseList(json);
+		json = JsonHelper.fixArrayField(json, "jobs");
+		json = JsonHelper.fixArrayField(json, "stalled");
+		List<Map<String, Object>> workers = JsonHelper.parseList(json);
 
 		for (Map<String, Object> worker : workers) {
 			if (worker.get("name").equals(TEST_WORKER)) {

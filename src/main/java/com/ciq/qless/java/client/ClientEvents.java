@@ -1,61 +1,93 @@
 package com.ciq.qless.java.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 public class ClientEvents {
 	public final Jedis _jedis;
-	public final JedisPubSub _jedisPubSub;
+	private ClientEventListener _clientEventListener;
+	private final Map<String, ArrayList<ClientEventCallback>> _callbacks;
+	private final ExecutorService _pool;
 
 	public ClientEvents(Jedis jedis) {
-		this._jedis = jedis;
+		_jedis = jedis;
+		_callbacks = new HashMap<String, ArrayList<ClientEventCallback>>();
+		_pool = Executors.newFixedThreadPool(20);
+	}
 
-		this._jedisPubSub = new JedisPubSub() {
+	public void registerCallback(ClientEventCallback callback,
+			String... channels) {
+		for (String channel : channels) {
+			ArrayList<ClientEventCallback> callbacks = new ArrayList<ClientEventCallback>();
 
-			@Override
-			public void onUnsubscribe(String arg0, int arg1) {
-				// TODO Auto-generated method stub
-
+			if (_callbacks.containsKey(channel)) {
+				callbacks = _callbacks.get(channel);
 			}
 
-			@Override
-			public void onSubscribe(String arg0, int arg1) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPUnsubscribe(String arg0, int arg1) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPSubscribe(String arg0, int arg1) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPMessage(String arg0, String arg1, String arg2) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onMessage(String arg0, String arg1) {
-				// TODO Auto-generated method stub
-
-			}
-		};
+			callbacks.add(callback);
+			_callbacks.put(channel, callbacks);
+		}
 	}
 
 	public void listen() {
-		this._jedis.subscribe(this._jedisPubSub, ":canceled", ":completed",
-				":failed", ":popped", ":stalled", ":put", ":track", ":untrack");
+		new Thread(new Runnable() {
+			public void run() {
+				Jedis subscriberJedis = new Jedis("localhost");
+				try {
+					_clientEventListener = new ClientEventListener();
+					_jedis.subscribe(_clientEventListener, ":canceled",
+							"completed", "failed", "popped", "stalled", "put",
+							"track", "untrack");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+
 	}
 
 	public void hangup() {
-		this._jedisPubSub.unsubscribe();
+		_clientEventListener.unsubscribe();
 	}
+
+	class ClientEventListener extends JedisPubSub {
+
+		@Override
+		public void onMessage(String channel, String message) {
+			if (_callbacks.containsKey(channel)) {
+				for (ClientEventCallback callback : _callbacks.get(channel)) {
+					callback.setMessage(channel, message);
+					_pool.execute(callback);
+				}
+			}
+		}
+
+		@Override
+		public void onPMessage(String pattern, String channel, String message) {
+		}
+
+		@Override
+		public void onSubscribe(String channel, int subscribedChannels) {
+		}
+
+		@Override
+		public void onUnsubscribe(String channel, int subscribedChannels) {
+		}
+
+		@Override
+		public void onPUnsubscribe(String pattern, int subscribedChannels) {
+		}
+
+		@Override
+		public void onPSubscribe(String pattern, int subscribedChannels) {
+		}
+
+	}
+
 }

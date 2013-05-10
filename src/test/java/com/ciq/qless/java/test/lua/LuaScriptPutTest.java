@@ -11,8 +11,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptPutTest extends LuaScriptTest {
 
@@ -144,14 +145,34 @@ public class LuaScriptPutTest extends LuaScriptTest {
 
 		String scriptResult = getJob(TEST_JID);
 
-		Map<String, Object> job = parseMap(scriptResult);
+		Map<String, Object> job = JsonHelper.parseMap(scriptResult);
 
 		assertTrue(job.containsKey("jid"));
 		assertTrue(job.get("jid").equals(jid));
-		assertEquals("SimpleTestJob", job.get("klass").toString());
+		assertEquals(TEST_JOB, job.get("klass").toString());
 		assertEquals("waiting", job.get("state").toString());
 
 		removeJob(jid);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testPutAddJobWithDependencies() throws LuaScriptException {
+		String jid1 = addJob();
+		String jid2 = addJob();
+
+		String depends = JsonHelper.createJSON(Arrays.asList(jid1, jid2));
+
+		List<String> keys = Arrays.asList(TEST_QUEUE);
+		List<String> args = Arrays.asList(UUID.randomUUID().toString(),
+				TEST_JOB, "{}", JQlessClient.getCurrentSeconds(), "0",
+				"depends", depends);
+
+		String jid = addJob(keys, args);
+		String json = getJob(jid);
+		Map<String, Object> job = JsonHelper.parseMap(json);
+		assertTrue(((List<String>) job.get("dependencies")).contains(jid1));
+		assertTrue(((List<String>) job.get("dependencies")).contains(jid2));
 	}
 
 	@Test
@@ -166,7 +187,7 @@ public class LuaScriptPutTest extends LuaScriptTest {
 		assertEquals(jid, TEST_JID);
 
 		String scriptResult = getJob(TEST_JID);
-		Map<String, Object> result = parseMap(scriptResult);
+		Map<String, Object> result = JsonHelper.parseMap(scriptResult);
 
 		assertTrue(result.containsKey("jid"));
 		assertTrue(result.get("jid").equals(jid));

@@ -1,9 +1,10 @@
-package com.ciq.qless.java;
+package com.ciq.qless.java.queues;
 
 import java.util.Arrays;
 import java.util.List;
 
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.utils.ResponseFactory;
 
 public class QueueJobs {
 	public final String _queueName;
@@ -60,7 +61,7 @@ public class QueueJobs {
 				JQlessClient.getCurrentSeconds(), this._queueName,
 				String.valueOf(start), String.valueOf(count));
 
-		return (List<String>) this._client
-				.call(JQlessClient.Command.JOBS, args);
+		return this._client.call(JQlessClient.Command.JOBS, args).as(
+				ResponseFactory.JIDS);
 	}
 }

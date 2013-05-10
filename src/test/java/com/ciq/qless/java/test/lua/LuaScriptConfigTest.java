@@ -10,7 +10,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptConfigTest extends LuaScriptTest {
 
@@ -79,7 +80,7 @@ public class LuaScriptConfigTest extends LuaScriptTest {
 			fail(e1.getMessage());
 		}
 
-		Map<String, Object> result = parseMap(scriptResult);
+		Map<String, Object> result = JsonHelper.parseMap(scriptResult);
 
 		for (String key : result.keySet()) {
 			if (key.equals("application")) {
@@ -113,7 +114,7 @@ public class LuaScriptConfigTest extends LuaScriptTest {
 			fail(e1.getMessage());
 		}
 
-		Map<String, Object> result = parseMap(scriptResult);
+		Map<String, Object> result = JsonHelper.parseMap(scriptResult);
 
 		for (String key : result.keySet()) {
 			if (key.equals("heartbeat")) {
@@ -141,7 +142,7 @@ public class LuaScriptConfigTest extends LuaScriptTest {
 			fail(e1.getMessage());
 		}
 
-		Map<String, Object> result = parseMap(scriptResult);
+		Map<String, Object> result = JsonHelper.parseMap(scriptResult);
 
 		for (String key : result.keySet()) {
 			if (key.equals("application")) {

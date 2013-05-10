@@ -11,8 +11,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ciq.qless.java.LuaScriptException;
 import com.ciq.qless.java.client.JQlessClient;
+import com.ciq.qless.java.lua.LuaScriptException;
+import com.ciq.qless.java.utils.JsonHelper;
 
 public class LuaScriptDependsTest extends LuaScriptTest {
 
@@ -104,7 +105,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		String json = getJob(jidParent);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("depends", job.get("state"));
 
 		// And Dependencies
@@ -113,7 +114,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Child Job
 		json = getJob(jidChild);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -141,7 +142,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		String json = getJob(jidParent);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("depends", job.get("state"));
 
 		// And Dependencies
@@ -151,7 +152,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -160,7 +161,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Second Child Job
 		json = getJob(jidChild2);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -181,7 +182,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		String json = getJob(jidParent);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("depends", job.get("state"));
 
 		// And Dependencies
@@ -190,7 +191,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -207,8 +208,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		json = getJob(jidParent);
-		json = fixArrayField(json, "dependencies");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependencies");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Dependencies
@@ -217,8 +218,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		json = fixArrayField(json, "dependents");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependents");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -240,7 +241,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		String json = getJob(jidParent);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("depends", job.get("state"));
 
 		// And Dependencies
@@ -250,7 +251,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -259,7 +260,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Second Child Job
 		json = getJob(jidChild2);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -277,8 +278,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		json = getJob(jidParent);
-		json = fixArrayField(json, "dependencies");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependencies");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Dependencies
@@ -287,8 +288,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		json = fixArrayField(json, "dependents");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependents");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -297,8 +298,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		json = fixArrayField(json, "dependents");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependents");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -321,7 +322,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		String json = getJob(jidParent);
-		Map<String, Object> job = parseMap(json);
+		Map<String, Object> job = JsonHelper.parseMap(json);
 		assertEquals("depends", job.get("state"));
 
 		// And Dependencies
@@ -331,7 +332,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -340,7 +341,7 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Second Child Job
 		json = getJob(jidChild2);
-		job = parseMap(json);
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -358,8 +359,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get Parent Job
 		json = getJob(jidParent);
-		json = fixArrayField(json, "dependencies");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependencies");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Dependencies
@@ -368,8 +369,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		json = fixArrayField(json, "dependents");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependents");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
@@ -378,8 +379,8 @@ public class LuaScriptDependsTest extends LuaScriptTest {
 
 		// Get First Child Job
 		json = getJob(jidChild);
-		json = fixArrayField(json, "dependents");
-		job = parseMap(json);
+		json = JsonHelper.fixArrayField(json, "dependents");
+		job = JsonHelper.parseMap(json);
 		assertEquals("waiting", job.get("state"));
 
 		// And Depends
