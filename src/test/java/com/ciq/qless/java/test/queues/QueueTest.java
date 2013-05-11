@@ -130,7 +130,7 @@ public class QueueTest extends BaseTest {
 
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("url", "http://www.homepage.com");
-		_queue.put(SimpleTestJob.class.getName(), data, options);
+		_queue.put(SimpleTestJob.class.getName(), options, data);
 
 		BaseJob job = _queue.pop();
 

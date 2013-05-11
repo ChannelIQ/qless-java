@@ -10,6 +10,10 @@ public class SimpleTestJob extends Job {
 		super(client, attributes);
 	}
 
+	public SimpleTestJob(JQlessClient _client) {
+		super(_client);
+	}
+
 	@Override
 	public void performWork() {
 		// Do something interesting

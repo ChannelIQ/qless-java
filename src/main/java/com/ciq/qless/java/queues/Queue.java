@@ -70,15 +70,25 @@ public class Queue {
 	}
 
 	public void put(BaseJob job, JobOptions options) {
-		put(job.getClass().getName(), job.getAttributes().getData(), options);
+		put(job, options, job.getAttributes().getData());
 	}
 
-	public void put(String klass, Map<String, Object> data, JobOptions options) {
+	public void put(BaseJob job, JobOptions options, Map<String, Object> data) {
+		put(job.getClass().getName(), options, data);
+	}
+
+	public void put(String klass, JobOptions options, Map<String, Object> data) {
 		List<String> keys = Arrays.asList(this._queueName);
 
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(options.getJID());
 		args.add(klass);
+
+		// Override data field if filled
+		if (options.getData().size() != 0) {
+			data = options.getData();
+		}
+
 		args.add(JsonHelper.createJSON(data));
 		args.add(JQlessClient.getCurrentSeconds());
 		args.add(String.valueOf(options.getDelay()));
@@ -126,6 +136,12 @@ public class Queue {
 		args.add(this._queueName);
 		args.add(options.getJID());
 		args.add(klass);
+
+		// Override data field if filled
+		if (options.getData().size() != 0) {
+			data = options.getData();
+		}
+
 		args.add(JsonHelper.createJSON(data));
 		args.add(JQlessClient.getCurrentSeconds());
 		args.add("interval");

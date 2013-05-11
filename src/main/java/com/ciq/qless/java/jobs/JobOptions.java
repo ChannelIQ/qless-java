@@ -1,7 +1,9 @@
 package com.ciq.qless.java.jobs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JobOptions {
 	private String _jid;
@@ -9,6 +11,7 @@ public class JobOptions {
 	private int _priority;
 	private int _offset;
 	private int _retries;
+	private Map<String, Object> _data;
 	private List<String> _depends;
 	private List<String> _tags;
 
@@ -20,6 +23,7 @@ public class JobOptions {
 		_retries = builder._retries;
 		_depends = builder._depends;
 		_tags = builder._tags;
+		_data = builder._data;
 	}
 
 	public static class OptionsBuilder {
@@ -31,6 +35,7 @@ public class JobOptions {
 		private int _priority = 0;
 		private int _offset = 0;
 		private int _retries = 5;
+		private Map<String, Object> _data = new HashMap<String, Object>();
 		private List<String> _depends = new ArrayList<String>();
 		private List<String> _tags = new ArrayList<String>();
 
@@ -55,6 +60,11 @@ public class JobOptions {
 
 		public OptionsBuilder retries(int retries) {
 			this._retries = retries;
+			return this;
+		}
+
+		public OptionsBuilder data(Map<String, Object> data) {
+			this._data = data;
 			return this;
 		}
 
@@ -87,6 +97,14 @@ public class JobOptions {
 
 	public void setJID(String jid) {
 		_jid = jid;
+	}
+
+	public Map<String, Object> getData() {
+		return this._data;
+	}
+
+	public void setData(Map<String, Object> data) {
+		this._data = data;
 	}
 
 	public List<String> getDepends() {

@@ -81,7 +81,7 @@ public class JQlessClientTest extends BaseTest {
 		JobOptions options = new JobOptions.OptionsBuilder(UUID.randomUUID()
 				.toString()).build();
 
-		testQueue.put(SimpleTestJob.class.getName(), data, options);
+		testQueue.put(SimpleTestJob.class.getName(), options, data);
 
 		BaseJob job = testQueue.pop();
 		String jid = job.getAttributes().getJID();

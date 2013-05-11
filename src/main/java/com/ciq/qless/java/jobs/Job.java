@@ -16,7 +16,6 @@ public abstract class Job extends BaseJob {
 
 	public Job(JQlessClient client, Attributes atts) {
 		super(client, atts);
-
 	}
 
 	@Override
