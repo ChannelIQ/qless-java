@@ -29,7 +29,7 @@ public abstract class BaseJob {
 		_stateChanged = false;
 	};
 
-	public abstract void performWork();
+	public abstract boolean performWork() throws Exception;
 
 	public JQlessClient getClient() {
 		return _client;

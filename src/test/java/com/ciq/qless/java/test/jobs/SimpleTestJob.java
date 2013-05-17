@@ -15,14 +15,17 @@ public class SimpleTestJob extends Job {
 	}
 
 	@Override
-	public void performWork() {
+	public boolean performWork() {
 		// Do something interesting
 		String jid = this.getAttributes().getJID();
 
 		try {
 			complete();
+
+			return true;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
+			return false;
 		}
 	}
 

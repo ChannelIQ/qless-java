@@ -74,7 +74,7 @@ public class JQlessClientTest extends BaseTest {
 	}
 
 	@Test
-	public void testCreatingANewQueue() throws QlessClientException {
+	public void testCreatingANewQueue() throws Exception {
 		Queue testQueue = _client.Queues().getNamedQueue("test_queue");
 
 		Map<String, Object> data = new HashMap<String, Object>();

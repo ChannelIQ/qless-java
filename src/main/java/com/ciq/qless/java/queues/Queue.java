@@ -77,6 +77,10 @@ public class Queue {
 		put(job.getClass().getName(), options, data);
 	}
 
+	public void put(Class<?> klass, JobOptions options, Map<String, Object> data) {
+		put(klass.getName(), options, data);
+	}
+
 	public void put(String klass, JobOptions options, Map<String, Object> data) {
 		List<String> keys = Arrays.asList(this._queueName);
 

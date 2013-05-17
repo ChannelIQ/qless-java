@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class JobOptions {
 	private String _jid;
@@ -28,7 +29,7 @@ public class JobOptions {
 
 	public static class OptionsBuilder {
 		// Required fields
-		private final String _jid;
+		private String _jid = UUID.randomUUID().toString();
 
 		// Optional fields
 		private int _delay = 0;
@@ -39,8 +40,16 @@ public class JobOptions {
 		private List<String> _depends = new ArrayList<String>();
 		private List<String> _tags = new ArrayList<String>();
 
+		public OptionsBuilder() {
+		}
+
 		public OptionsBuilder(String jid) {
 			this._jid = jid;
+		}
+
+		public OptionsBuilder jid(String jid) {
+			this._jid = jid;
+			return this;
 		}
 
 		public OptionsBuilder delay(int delay) {
