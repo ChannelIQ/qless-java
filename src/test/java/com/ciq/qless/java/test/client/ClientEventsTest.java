@@ -3,7 +3,7 @@ package com.ciq.qless.java.test.client;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.ClientEventCallback;
 import com.ciq.qless.java.client.ClientEvents;
@@ -15,8 +15,8 @@ public class ClientEventsTest extends BaseTest {
 
 	@BeforeClass
 	public static void init() {
-		Jedis jedis = new Jedis("localhost");
-		_clientEvents = new ClientEvents(jedis);
+		JedisPool pool = new JedisPool("localhost");
+		_clientEvents = new ClientEvents(pool);
 		_clientEvents.listen();
 	}
 

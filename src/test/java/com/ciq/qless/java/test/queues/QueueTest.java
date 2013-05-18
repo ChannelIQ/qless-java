@@ -12,7 +12,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.BaseJob;
@@ -28,8 +28,9 @@ public class QueueTest extends BaseTest {
 
 	@BeforeClass
 	public static void init() {
-		Jedis jedis = new Jedis("localhost");
-		_queue = new Queue("test-queue", new JQlessClient(jedis), "test-worker");
+		JedisPool pool = new JedisPool("localhost");
+		// Jedis jedis = new Jedis("localhost");
+		_queue = new Queue("test-queue", new JQlessClient(pool), "test-worker");
 	}
 
 	@Test

@@ -7,16 +7,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 
 public class ClientEvents {
 	public final Jedis _jedis;
+	private final JedisPool _jedisPool;
 	private ClientEventListener _clientEventListener;
 	private final Map<String, ArrayList<ClientEventCallback>> _callbacks;
 	private final ExecutorService _pool;
 
-	public ClientEvents(Jedis jedis) {
-		_jedis = jedis;
+	public ClientEvents(JedisPool pool) {
+		_jedisPool = pool;
+		_jedis = this._jedisPool.getResource();
 		_callbacks = new HashMap<String, ArrayList<ClientEventCallback>>();
 		_pool = Executors.newFixedThreadPool(20);
 	}
@@ -38,7 +41,6 @@ public class ClientEvents {
 	public void listen() {
 		new Thread(new Runnable() {
 			public void run() {
-				Jedis subscriberJedis = new Jedis("localhost");
 				try {
 					_clientEventListener = new ClientEventListener();
 					_jedis.subscribe(_clientEventListener, ":canceled",
@@ -54,6 +56,7 @@ public class ClientEvents {
 
 	public void hangup() {
 		_clientEventListener.unsubscribe();
+		_jedisPool.returnResource(this._jedis);
 	}
 
 	class ClientEventListener extends JedisPubSub {

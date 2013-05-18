@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Scanner;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class LuaScript {
-	private final Jedis _client;
+	private final JedisPool _pool;
 	private String _sha1Key = "";
 
-	public LuaScript(Jedis client) {
-		this._client = client;
+	public LuaScript(JedisPool pool) {
+		this._pool = pool;
 	}
 
 	public Object callScript(String scriptName, List<String> keys,
@@ -26,29 +27,39 @@ public class LuaScript {
 			Object o = callScriptByHash(_sha1Key, keys, args);
 			return o;
 		} catch (Exception e) {
-			System.out.println("Keys count - " + keys.size() + " - Args: "
-					+ args.size());
-			System.out.println("Initial error calling script (" + scriptName
-					+ ") - " + e.getMessage());
 			this._sha1Key = reloadScript(scriptName);
 			try {
 				return callScriptByHash(_sha1Key, keys, args);
 			} catch (Exception ex) {
 				// Log
-				System.out.println("Secondary error calling script ("
-						+ scriptName + ") - " + ex.getMessage());
 				throw new LuaScriptException(ex);
 			}
 		}
 	}
 
-	private String reloadScript(String scriptName) {
-		return _client.scriptLoad(getScript(scriptName));
+	private String reloadScript(String scriptName) throws LuaScriptException {
+		Jedis jedis = this._pool.getResource();
+		try {
+			return jedis.scriptLoad(getScript(scriptName));
+		} catch (Exception ex) {
+			this._pool.returnBrokenResource(jedis);
+			throw new LuaScriptException(ex);
+		} finally {
+			this._pool.returnResource(jedis);
+		}
 	}
 
 	private Object callScriptByHash(String sha, List<String> keys,
-			List<String> args) {
-		return _client.evalsha(sha, keys, args);
+			List<String> args) throws Exception {
+		Jedis jedis = this._pool.getResource();
+		try {
+			return jedis.evalsha(sha, keys, args);
+		} catch (Exception ex) {
+			this._pool.returnBrokenResource(jedis);
+			throw new LuaScriptException(ex);
+		} finally {
+			this._pool.returnResource(jedis);
+		}
 	}
 
 	public String getScript(String scriptName) {

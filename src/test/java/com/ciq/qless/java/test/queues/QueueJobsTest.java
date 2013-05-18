@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScriptException;
@@ -22,8 +22,8 @@ public class QueueJobsTest extends BaseTest {
 
 	@BeforeClass
 	public static void init() {
-		Jedis jedis = new Jedis("localhost");
-		_queueJobs = new QueueJobs("test-queue", new JQlessClient(jedis));
+		JedisPool pool = new JedisPool("localhost");
+		_queueJobs = new QueueJobs("test-queue", new JQlessClient(pool));
 	}
 
 	@Test

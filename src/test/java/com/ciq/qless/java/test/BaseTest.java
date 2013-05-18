@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.junit.Before;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.lua.LuaScript;
@@ -27,13 +28,15 @@ public abstract class BaseTest {
 	protected final String TEST_WORKER = "test-worker";
 	protected final String TEST_JOB = "com.ciq.qless.java.test.jobs.SimpleTestJob";
 
-	protected Jedis _jedis = null;
+	protected JedisPool _jedis = null;
 	protected LuaScript _luaScript = null;
 
 	@Before
 	public void initialize() {
-		_jedis = new Jedis("localhost");
-		_jedis.flushAll();
+		_jedis = new JedisPool("localhost");
+		Jedis jedis = _jedis.getResource();
+		jedis.flushAll();
+		_jedis.returnResource(jedis);
 		_luaScript = new LuaScript(_jedis);
 	}
 

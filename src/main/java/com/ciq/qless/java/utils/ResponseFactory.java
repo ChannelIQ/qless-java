@@ -209,8 +209,6 @@ public class ResponseFactory {
 						returnJobs.add(job);
 					}
 					return returnJobs;
-				} else if (data instanceof String) {
-					System.out.println("String:" + data.toString());
 				} else {
 					throw new IllegalArgumentException(
 							"Unknown type for data - " + data.toString() + " "
@@ -218,8 +216,6 @@ public class ResponseFactory {
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.out.println("Exception building jobs: "
-						+ ex.getMessage());
 			}
 			return new ArrayList<BaseJob>();
 		}
