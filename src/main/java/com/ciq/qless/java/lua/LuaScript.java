@@ -26,13 +26,17 @@ public class LuaScript {
 			Object o = callScriptByHash(_sha1Key, keys, args);
 			return o;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Keys count - " + keys.size() + " - Args: "
+					+ args.size());
+			System.out.println("Initial error calling script (" + scriptName
+					+ ") - " + e.getMessage());
 			this._sha1Key = reloadScript(scriptName);
 			try {
 				return callScriptByHash(_sha1Key, keys, args);
 			} catch (Exception ex) {
 				// Log
-				System.out.println(ex.getMessage());
+				System.out.println("Secondary error calling script ("
+						+ scriptName + ") - " + ex.getMessage());
 				throw new LuaScriptException(ex);
 			}
 		}

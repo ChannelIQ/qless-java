@@ -89,6 +89,18 @@ public class LuaScriptPopTest extends LuaScriptBaseTest {
 				"Arg \"now\" missing or not a number: test-now");
 	}
 
+	@Test
+	public void testPopNoJobsWaiting() throws LuaScriptException {
+		List<String> keys = Arrays.asList(TEST_QUEUE);
+		List<String> args = Arrays.asList(TEST_WORKER, "1",
+				JQlessClient.getCurrentSeconds());
+
+		@SuppressWarnings("unchecked")
+		List<String> json = (List<String>) _luaScript.callScript(
+				this.scriptName(), keys, args);
+		assertEquals(new ArrayList<String>(), json);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testPopASingleJob() throws LuaScriptException {

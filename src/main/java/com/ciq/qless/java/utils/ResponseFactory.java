@@ -192,20 +192,36 @@ public class ResponseFactory {
 		@SuppressWarnings("unchecked")
 		@Override
 		public List<BaseJob> build(Object data, JQlessClient client) {
-			List<String> json = (List<String>) data;
-			// json = JsonHelper.fixArrayField(json, "dependents",
-			// "dependencies");
-			List<Map> jobs = JsonHelper.parseList(json, List.class, Map.class);
-			ArrayList<BaseJob> returnJobs = new ArrayList<BaseJob>();
+			try {
+				if (data instanceof List<?>) {
+					List<String> json = (List<String>) data;
+					// json = JsonHelper.fixArrayField(json, "dependents",
+					// "dependencies");
+					List<Map> jobs = JsonHelper.parseList(json, List.class,
+							Map.class);
+					ArrayList<BaseJob> returnJobs = new ArrayList<BaseJob>();
 
-			ClassLoader classLoader = ResponseFactory.class.getClassLoader();
+					ClassLoader classLoader = ResponseFactory.class
+							.getClassLoader();
 
-			for (Map<String, Object> map : jobs) {
-				BaseJob job = createJob(classLoader, map, client);
-				returnJobs.add(job);
+					for (Map<String, Object> map : jobs) {
+						BaseJob job = createJob(classLoader, map, client);
+						returnJobs.add(job);
+					}
+					return returnJobs;
+				} else if (data instanceof String) {
+					System.out.println("String:" + data.toString());
+				} else {
+					throw new IllegalArgumentException(
+							"Unknown type for data - " + data.toString() + " "
+									+ data.getClass().getName());
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.out.println("Exception building jobs: "
+						+ ex.getMessage());
 			}
-
-			return returnJobs;
+			return new ArrayList<BaseJob>();
 		}
 
 		@Override

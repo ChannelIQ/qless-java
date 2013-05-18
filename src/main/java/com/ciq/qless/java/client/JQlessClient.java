@@ -181,7 +181,8 @@ public class JQlessClient {
 					keys, args);
 			return new LuaScriptObject(o);
 		} catch (Exception ex) {
-			System.out.println("Problem: " + ex.getMessage());
+			ex.printStackTrace();
+			System.out.println("JQlessClient Problem: " + ex.getMessage());
 			return new LuaScriptObject(new Object());
 		}
 	}
