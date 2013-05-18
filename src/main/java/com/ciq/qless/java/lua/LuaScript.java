@@ -7,12 +7,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class LuaScript {
 	private final JedisPool _pool;
 	private String _sha1Key = "";
+
+	private static final Logger _logger = LoggerFactory
+			.getLogger(LuaScript.class);
 
 	public LuaScript(JedisPool pool) {
 		this._pool = pool;
@@ -27,11 +33,16 @@ public class LuaScript {
 			Object o = callScriptByHash(_sha1Key, keys, args);
 			return o;
 		} catch (Exception e) {
+			_logger.info("An attempt to call script (" + scriptName
+					+ ") resulted in an exception - " + e.getMessage()
+					+ ".  Reloading the script will be attempted.");
 			this._sha1Key = reloadScript(scriptName);
 			try {
 				return callScriptByHash(_sha1Key, keys, args);
 			} catch (Exception ex) {
 				// Log
+				_logger.error("A call to script (" + scriptName
+						+ ") resulted in an exception - " + e.getMessage());
 				throw new LuaScriptException(ex);
 			}
 		}
@@ -42,6 +53,8 @@ public class LuaScript {
 		try {
 			return jedis.scriptLoad(getScript(scriptName));
 		} catch (Exception ex) {
+			_logger.error("Unable to load script (" + scriptName
+					+ ") from Redis.  Exception - " + ex.getMessage());
 			this._pool.returnBrokenResource(jedis);
 			throw new LuaScriptException(ex);
 		} finally {
@@ -55,6 +68,8 @@ public class LuaScript {
 		try {
 			return jedis.evalsha(sha, keys, args);
 		} catch (Exception ex) {
+			_logger.error("A call to script with SHA (" + sha
+					+ ") resulted in an exception - " + ex.getMessage());
 			this._pool.returnBrokenResource(jedis);
 			throw new LuaScriptException(ex);
 		} finally {
@@ -72,16 +87,15 @@ public class LuaScript {
 
 			return s.hasNext() ? s.next() : "";
 		} catch (Exception e) {
-			System.out.println("Failed to open the " + scriptName
+			_logger.error("Failed to open the " + scriptName
 					+ " for processing");
 		} finally {
 			if (stream != null)
 				try {
 					stream.close();
 				} catch (IOException e) {
-					System.out
-							.println("Failed to close the script file Input Stream for file "
-									+ scriptName);
+					_logger.error("Failed to close the script file Input Stream for file "
+							+ scriptName);
 				}
 		}
 
@@ -96,6 +110,8 @@ public class LuaScript {
 			md = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
 			// Log it
+			_logger.error("Unable to calculate script hash for (" + script
+					+ ") resulted in an exception - " + e.getMessage());
 		}
 		return byteArrayToHexString(md.digest(script.getBytes()));
 	}

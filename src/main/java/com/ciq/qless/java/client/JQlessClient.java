@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -28,6 +30,9 @@ public class JQlessClient {
 	private final ClientEvents _clientEvents;
 
 	private final LuaScript _scriptRunner;
+
+	private static final Logger _logger = LoggerFactory
+			.getLogger(JQlessClient.class);
 
 	public JQlessClient(JedisPool pool) {
 		this._jedisPool = pool;
@@ -89,9 +94,9 @@ public class JQlessClient {
 				count += Integer.parseInt(obj.toString());
 			}
 		} catch (JedisException je) {
-			System.out.println(je.getMessage());
+			_logger.error("Exception getting QueueLength: " + je.getMessage());
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception getting QueueLength: " + e.getMessage());
 			this._jedisPool.returnBrokenResource(jedis);
 		} finally {
 			this._jedisPool.returnResource(jedis);
@@ -153,6 +158,7 @@ public class JQlessClient {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
+			_logger.error("Unable to determine machine name: " + e.getMessage());
 			return "unknown-host";
 		}
 	}
@@ -187,8 +193,8 @@ public class JQlessClient {
 					keys, args);
 			return new LuaScriptObject(o);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("JQlessClient Problem: " + ex.getMessage());
+			_logger.error("JQlessClient Problem calling scripts for command ("
+					+ command.scriptName() + ") : " + ex.getMessage());
 			return new LuaScriptObject(new Object());
 		}
 	}

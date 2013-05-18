@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.Attributes;
 import com.ciq.qless.java.jobs.BaseJob;
 
 public class ResponseFactory {
+	private static final Logger _logger = LoggerFactory
+			.getLogger(ResponseFactory.class);
+
 	private static final Response<String> STRING = new Response<String>() {
 		@Override
 		public String build(Object data) {
@@ -215,7 +221,8 @@ public class ResponseFactory {
 									+ data.getClass().getName());
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.error("Exception while parsing complex jobs - exception: "
+						+ ex.getMessage());
 			}
 			return new ArrayList<BaseJob>();
 		}
@@ -273,19 +280,26 @@ public class ResponseFactory {
 
 			return job;
 		} catch (ClassNotFoundException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (NoSuchMethodException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (SecurityException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (InstantiationException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (IllegalAccessException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (IllegalArgumentException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		} catch (InvocationTargetException e) {
-			System.out.println(e.getMessage());
+			_logger.error("Exception while attempting to create a Job - exception: "
+					+ e.getMessage());
 		}
 
 		return null;
