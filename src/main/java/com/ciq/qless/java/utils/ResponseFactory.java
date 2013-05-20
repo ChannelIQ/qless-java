@@ -201,6 +201,10 @@ public class ResponseFactory {
 			try {
 				if (data instanceof List<?>) {
 					List<String> json = (List<String>) data;
+
+					if (json.size() == 0)
+						return null;
+
 					// json = JsonHelper.fixArrayField(json, "dependents",
 					// "dependencies");
 					List<Map> jobs = JsonHelper.parseList(json, List.class,
