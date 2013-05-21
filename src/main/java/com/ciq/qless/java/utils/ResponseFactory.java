@@ -280,7 +280,6 @@ public class ResponseFactory {
 				c = klazz.getConstructor(JQlessClient.class);
 
 			BaseJob job = (BaseJob) c.newInstance(client, attrs);
-			System.out.println("aClass.getName() = " + klazz.getName());
 
 			return job;
 		} catch (ClassNotFoundException e) {
