@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.Attributes;
 import com.ciq.qless.java.jobs.BaseJob;
 
 public class ResponseFactory {
+	private static final Logger _logger = LoggerFactory
+			.getLogger(ResponseFactory.class);
+
 	private static final Response<String> STRING = new Response<String>() {
 		@Override
 		public String build(Object data) {
@@ -195,6 +201,10 @@ public class ResponseFactory {
 			try {
 				if (data instanceof List<?>) {
 					List<String> json = (List<String>) data;
+
+					if (json.size() == 0)
+						return null;
+
 					// json = JsonHelper.fixArrayField(json, "dependents",
 					// "dependencies");
 					List<Map> jobs = JsonHelper.parseList(json, List.class,
@@ -209,16 +219,13 @@ public class ResponseFactory {
 						returnJobs.add(job);
 					}
 					return returnJobs;
-				} else if (data instanceof String) {
-					System.out.println("String:" + data.toString());
 				} else {
 					throw new IllegalArgumentException(
 							"Unknown type for data - " + data.toString() + " "
 									+ data.getClass().getName());
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.out.println("Exception building jobs: "
+				_logger.error("Exception while parsing complex jobs - exception: "
 						+ ex.getMessage());
 			}
 			return new ArrayList<BaseJob>();
@@ -273,23 +280,29 @@ public class ResponseFactory {
 				c = klazz.getConstructor(JQlessClient.class);
 
 			BaseJob job = (BaseJob) c.newInstance(client, attrs);
-			System.out.println("aClass.getName() = " + klazz.getName());
 
 			return job;
 		} catch (ClassNotFoundException e) {
-			System.out.println(e.getMessage());
+			_logger.error("ClassNotFoundException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (NoSuchMethodException e) {
-			System.out.println(e.getMessage());
+			_logger.error("NoSuchMethodException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (SecurityException e) {
-			System.out.println(e.getMessage());
+			_logger.error("SecurityException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (InstantiationException e) {
-			System.out.println(e.getMessage());
+			_logger.error("InstantiationException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (IllegalAccessException e) {
-			System.out.println(e.getMessage());
+			_logger.error("IllegalAccessException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (IllegalArgumentException e) {
-			System.out.println(e.getMessage());
+			_logger.error("IllegalArgumentException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (InvocationTargetException e) {
-			System.out.println(e.getMessage());
+			_logger.error("InvocationTargetException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		}
 
 		return null;

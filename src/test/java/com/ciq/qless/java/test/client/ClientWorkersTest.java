@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.ClientWorkers;
 import com.ciq.qless.java.client.JQlessClient;
@@ -34,8 +34,8 @@ public class ClientWorkersTest extends BaseTest {
 
 	@BeforeClass
 	public static void init() {
-		Jedis jedis = new Jedis("localhost");
-		_clientWorkers = new ClientWorkers(new JQlessClient(jedis));
+		JedisPool pool = new JedisPool("localhost");
+		_clientWorkers = new ClientWorkers(new JQlessClient(pool));
 	}
 
 	@Before

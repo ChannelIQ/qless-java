@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -17,9 +20,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonHelper {
-	/*
-	 * JSON Engine
-	 */
+	private static final Logger _logger = LoggerFactory
+			.getLogger(JsonHelper.class);
 
 	@SuppressWarnings("unchecked")
 	public static <E> List<E> parseList(String json) {
@@ -31,11 +33,11 @@ public class JsonHelper {
 			jp = factory.createParser(json);
 			result = jp.readValueAs(List.class);
 		} catch (JsonParseException e) {
-			System.out.println("JsonParseException: " + e.getMessage());
+			_logger.error("JsonParseException: " + e.getMessage());
 		} catch (JsonProcessingException e) {
-			System.out.println("JsonProcessingException: " + e.getMessage());
+			_logger.error("JsonProcessingException: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("IOException: " + e.getMessage());
+			_logger.error("IOException: " + e.getMessage());
 		}
 
 		return result;
@@ -53,11 +55,11 @@ public class JsonHelper {
 				result.add(jp.readValueAs(innerClazz));
 			}
 		} catch (JsonParseException e) {
-			System.out.println("JsonParseException: " + e.getMessage());
+			_logger.error("JsonParseException: " + e.getMessage());
 		} catch (JsonProcessingException e) {
-			System.out.println("JsonProcessingException: " + e.getMessage());
+			_logger.error("JsonProcessingException: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("IOException: " + e.getMessage());
+			_logger.error("IOException: " + e.getMessage());
 		}
 
 		return result;
@@ -73,11 +75,11 @@ public class JsonHelper {
 			jp = factory.createParser(json);
 			result = jp.readValueAs(HashMap.class);
 		} catch (JsonParseException e) {
-			System.out.println("JsonParseException: " + e.getMessage());
+			_logger.error("JsonParseException: " + e.getMessage());
 		} catch (JsonProcessingException e) {
-			System.out.println("JsonProcessingException: " + e.getMessage());
+			_logger.error("JsonProcessingException: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("IOException: " + e.getMessage());
+			_logger.error("IOException: " + e.getMessage());
 		}
 
 		return result;
@@ -93,11 +95,11 @@ public class JsonHelper {
 			jp = factory.createParser(strings.get(0));
 			result = jp.readValueAs(HashMap.class);
 		} catch (JsonParseException e) {
-			System.out.println("JsonParseException: " + e.getMessage());
+			_logger.error("JsonParseException: " + e.getMessage());
 		} catch (JsonProcessingException e) {
-			System.out.println("JsonProcessingException: " + e.getMessage());
+			_logger.error("JsonProcessingException: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("IOException: " + e.getMessage());
+			_logger.error("IOException: " + e.getMessage());
 		}
 
 		return result;
@@ -115,11 +117,11 @@ public class JsonHelper {
 			output = new String(data);
 			System.out.println(output);
 		} catch (JsonGenerationException e) {
-			System.out.println(e.getMessage());
+			_logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			System.out.println(e.getMessage());
+			_logger.error(e.getMessage());
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			_logger.error(e.getMessage());
 		}
 
 		return output;

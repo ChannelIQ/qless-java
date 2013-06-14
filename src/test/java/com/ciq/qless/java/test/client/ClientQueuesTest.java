@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.ciq.qless.java.client.ClientQueues;
 import com.ciq.qless.java.client.JQlessClient;
@@ -23,8 +23,9 @@ public class ClientQueuesTest extends BaseTest {
 
 	@BeforeClass
 	public static void init() {
-		Jedis jedis = new Jedis("localhost");
-		_clientQueues = new ClientQueues(new JQlessClient(jedis));
+		JedisPool pool = new JedisPool("localhost");
+		// Jedis jedis = new Jedis("localhost");
+		_clientQueues = new ClientQueues(new JQlessClient(pool));
 	}
 
 	@Test
