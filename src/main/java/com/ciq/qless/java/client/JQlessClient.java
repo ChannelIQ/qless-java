@@ -168,6 +168,10 @@ public class JQlessClient {
 				.getMillis() / 1000);
 	}
 
+	public void close() {
+		_jedisPool.destroy();
+	}
+
 	// EVENTS SECTION - this will require another instance of Jedis running in
 	// the background to fully support eventing
 

@@ -283,26 +283,26 @@ public class ResponseFactory {
 
 			return job;
 		} catch (ClassNotFoundException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("ClassNotFoundException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (NoSuchMethodException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("NoSuchMethodException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (SecurityException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("SecurityException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (InstantiationException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("InstantiationException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (IllegalAccessException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("IllegalAccessException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (IllegalArgumentException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("IllegalArgumentException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		} catch (InvocationTargetException e) {
-			_logger.error("Exception while attempting to create a Job - exception: "
-					+ e.getMessage());
+			_logger.error("InvocationTargetException while attempting to create a Job - exception: "
+					+ e.getMessage() + e.getStackTrace());
 		}
 
 		return null;
