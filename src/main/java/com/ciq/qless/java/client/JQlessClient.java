@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +88,8 @@ public class JQlessClient {
 			trans.zcard("ql:q:" + name + "-locks");
 			trans.zcard("ql:q:" + name + "-work");
 			trans.zcard("ql:q:" + name + "-scheduled");
+			trans.zcount("ql:q:" + name + "-recur", 0,
+					Integer.parseInt(getCurrentSeconds()));
 			List<Object> allItems = trans.exec();
 
 			for (Object obj : allItems) {
@@ -164,8 +166,8 @@ public class JQlessClient {
 	}
 
 	public static String getCurrentSeconds() {
-		return String.valueOf(LocalDateTime.now(DateTimeZone.UTC).toDateTime()
-				.getMillis() / 1000);
+		return String.valueOf(new DateTime(System.currentTimeMillis(),
+				DateTimeZone.UTC).getMillis() / 1000);
 	}
 
 	public void close() {
