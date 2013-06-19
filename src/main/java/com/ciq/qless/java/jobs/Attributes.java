@@ -53,6 +53,7 @@ public class Attributes {
 		setTracked(false);
 		setQueueName("mock_queue");
 		setRetries(5);
+		setInterval(60);
 		setRetriesRemaining(5);
 		setFailure(new HashMap<String, Object>());
 		setHistory(new ArrayList<HashMap<String, Object>>());
@@ -157,6 +158,14 @@ public class Attributes {
 
 	public void setRetries(int retries) {
 		_attributes.put("retries", retries);
+	}
+
+	public int getInterval() {
+		return (Integer) _attributes.get("interval");
+	}
+
+	public void setInterval(int interval) {
+		_attributes.put("interval", interval);
 	}
 
 	public int getRetriesRemaining() {

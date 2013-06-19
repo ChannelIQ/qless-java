@@ -9,8 +9,6 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.utils.ResponseFactory;
 
 public abstract class RecurringJob extends BaseJob {
-	private int _interval;
-
 	public RecurringJob(JQlessClient client, Attributes atts) {
 		super(client, atts);
 	}
@@ -48,7 +46,7 @@ public abstract class RecurringJob extends BaseJob {
 	}
 
 	public int getInterval() {
-		return _interval;
+		return _attributes.getInterval();
 	}
 
 	public void setInterval(int interval) {
@@ -59,7 +57,7 @@ public abstract class RecurringJob extends BaseJob {
 				.as(ResponseFactory.BOOLEAN);
 
 		if (success) {
-			_interval = interval;
+			_attributes.setInterval(interval);
 		}
 	}
 
