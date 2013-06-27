@@ -19,7 +19,7 @@ public abstract class Job extends BaseJob {
 	}
 
 	@Override
-	public abstract boolean performWork() throws Exception;
+	public abstract JobResults performWork() throws Exception;
 
 	@Override
 	public void setPriority(int priority) {
