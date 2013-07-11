@@ -11,17 +11,20 @@ public class JobResults {
 	public JobResults() {
 	}
 
-	// Builder methods
-	public static JobResults success() {
+	public static JobResults build() {
 		JobResults results = new JobResults();
-		results.setIsSuccessful(true);
 		return results;
 	}
 
-	public static JobResults fail() {
-		JobResults results = new JobResults();
-		results.setIsSuccessful(false);
-		return results;
+	// Builder methods
+	public JobResults success() {
+		this.setIsSuccessful(true);
+		return this;
+	}
+
+	public JobResults fail() {
+		this.setIsSuccessful(false);
+		return this;
 	}
 
 	public JobResults addError(String msg) {
@@ -60,6 +63,19 @@ public class JobResults {
 		return _errors;
 	}
 
+	public String getPrettyErrors() {
+		String errors = null;
+		if (hasErrors()) {
+			for (String errorMsg : getErrors()) {
+				errors = errors + errorMsg;
+			}
+		} else {
+			errors = "Unknown";
+		}
+
+		return errors;
+	}
+
 	public boolean hasWarnings() {
 		return (this._warnings != null);
 	}
@@ -69,5 +85,18 @@ public class JobResults {
 			this._warnings = new ArrayList<String>();
 		}
 		return _warnings;
+	}
+
+	public String getPrettyWarnings() {
+		String warnings = null;
+		if (hasWarnings()) {
+			for (String warnMsg : getWarnings()) {
+				warnings = warnings + "|" + warnMsg;
+			}
+		} else {
+			warnings = "Unknown";
+		}
+
+		return warnings;
 	}
 }

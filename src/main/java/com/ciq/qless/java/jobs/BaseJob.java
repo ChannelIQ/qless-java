@@ -149,7 +149,7 @@ public abstract class BaseJob {
 		List<String> args = Arrays.asList(_attributes.getJID(),
 				_attributes.getWorkerName(), group, message,
 				JQlessClient.getCurrentSeconds(),
-				JsonHelper.createJSON(_attributes.getData().toString()));
+				JsonHelper.createJSON(_attributes.getData()));
 
 		return this._client.call(JQlessClient.Command.FAIL, args).as(
 				ResponseFactory.JID);

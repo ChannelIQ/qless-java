@@ -157,7 +157,7 @@ public class ResponseFactory {
 			if (data instanceof String) {
 				String json = (String) data;
 				json = JsonHelper.fixArrayField(json, "dependents",
-						"dependencies");
+						"dependencies", "overrides");
 
 				if (json.equals("")) {
 					return null;

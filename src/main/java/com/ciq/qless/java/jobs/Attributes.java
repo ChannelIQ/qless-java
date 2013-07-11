@@ -35,6 +35,7 @@ public class Attributes {
 		setDefaults();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Attributes(Map<String, Object> attributes) {
 		this();
 
