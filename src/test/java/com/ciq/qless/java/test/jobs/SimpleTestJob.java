@@ -23,10 +23,10 @@ public class SimpleTestJob extends Job {
 		try {
 			complete();
 
-			return JobResults.success();
+			return JobResults.build().success();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
-			return JobResults.fail().addError(ex.getMessage());
+			return JobResults.build().fail().addError(ex.getMessage());
 		}
 	}
 

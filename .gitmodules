@@ -1,3 +1,6 @@
 [submodule "deps/jedis"]
 	path = deps/jedis
 	url = git@github.com:ChannelIQ/jedis.git
+[submodule "deps/qless-core"]
+	path = deps/qless-core
+	url = git://github.com/seomoz/qless-core.git

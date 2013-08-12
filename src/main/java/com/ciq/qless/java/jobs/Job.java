@@ -46,7 +46,7 @@ public abstract class Job extends BaseJob {
 
 		List<String> args = Arrays.asList(_attributes.getJID(),
 				_attributes.getKlassName(),
-				JsonHelper.createJSON(_attributes.getData().toString()),
+				JsonHelper.createJSON(_attributes.getData()),
 				JQlessClient.getCurrentSeconds(), "0");
 
 		String jid = this._client.call(JQlessClient.Command.PUT, keys, args)

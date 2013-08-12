@@ -161,7 +161,7 @@ public abstract class BaseJob {
 	public long heartbeat() {
 		List<String> args = Arrays.asList(_attributes.getJID(),
 				_attributes.getWorkerName(), JQlessClient.getCurrentSeconds(),
-				_attributes.getData().toString());
+				JsonHelper.createJSON(_attributes.getData()));
 
 		return this._client.call(JQlessClient.Command.HEARTBEAT, args).as(
 				ResponseFactory.HEARTBEAT);
@@ -194,7 +194,7 @@ public abstract class BaseJob {
 		args.add(_attributes.getWorkerName());
 		args.add(_attributes.getQueueName());
 		args.add(JQlessClient.getCurrentSeconds());
-		args.add(JsonHelper.createJSON(_attributes.getData().toString()));
+		args.add(JsonHelper.createJSON(_attributes.getData()));
 
 		if (nextQueue != null && nextQueue.length() > 0) {
 			args.add("next");

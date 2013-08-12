@@ -115,7 +115,7 @@ public class JsonHelper {
 
 			final byte[] data = ((ByteArrayOutputStream) out).toByteArray();
 			output = new String(data);
-			System.out.println(output);
+			_logger.debug("createJson: " + output);
 		} catch (JsonGenerationException e) {
 			_logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
