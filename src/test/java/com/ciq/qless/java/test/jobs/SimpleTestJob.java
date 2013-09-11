@@ -4,10 +4,14 @@ import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.Attributes;
 import com.ciq.qless.java.jobs.Job;
 import com.ciq.qless.java.jobs.JobResults;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 public class SimpleTestJob extends Job {
 
-	public SimpleTestJob(JQlessClient client, Attributes attributes) {
+	@Inject
+	public SimpleTestJob(@Assisted JQlessClient client,
+			@Assisted Attributes attributes) {
 		super(client, attributes);
 	}
 

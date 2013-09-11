@@ -20,6 +20,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonHelper {
+	/*
+	 * Eventually we need to get to more custom JSON parsing to handle all the
+	 * the Qless Nested scenarios
+	 * http://stackoverflow.com/questions/11747370/jackson
+	 * -how-to-process-deserialize-nested-json
+	 */
 	private static final Logger _logger = LoggerFactory
 			.getLogger(JsonHelper.class);
 

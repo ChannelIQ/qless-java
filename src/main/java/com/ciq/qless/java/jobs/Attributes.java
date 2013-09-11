@@ -8,9 +8,14 @@ import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Attributes {
 	private final Map<String, Object> _attributes;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(Attributes.class);
 
 	// private UUID _jid;
 	// private Map<String, Object> _data;
@@ -80,7 +85,19 @@ public class Attributes {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getData() {
-		return (Map<String, Object>) _attributes.get("data");
+		try {
+			final Map<String, Object> data = (Map<String, Object>) _attributes
+					.get("data");
+			return data;
+		} catch (Exception ex) {
+			if (_attributes.get("data") instanceof String) {
+				String s = (String) _attributes.get("data");
+				logger.error("The data field was not of type HashMap for job "
+						+ getJID()
+						+ ".  The value of data was String with a value: " + s);
+			}
+			return new HashMap<String, Object>();
+		}
 	}
 
 	public void setData(Map<String, Object> data) {

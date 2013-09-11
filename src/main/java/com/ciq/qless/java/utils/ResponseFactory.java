@@ -1,7 +1,6 @@
 package com.ciq.qless.java.utils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,18 @@ import org.slf4j.LoggerFactory;
 import com.ciq.qless.java.client.JQlessClient;
 import com.ciq.qless.java.jobs.Attributes;
 import com.ciq.qless.java.jobs.BaseJob;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import com.google.inject.util.Types;
 
 public class ResponseFactory {
 	private static final Logger _logger = LoggerFactory
 			.getLogger(ResponseFactory.class);
+
+	@Inject
+	private static Injector injector;
 
 	private static final Response<String> STRING = new Response<String>() {
 		@Override
@@ -267,42 +274,77 @@ public class ResponseFactory {
 	public static final ComplexResponse<List<BaseJob>> FAILEDJOBS = GROUPEDJOBS;
 	public static final ComplexResponse<List<BaseJob>> TRACKEDJOBS = GROUPEDJOBS;
 
-	private static BaseJob createJob(ClassLoader classLoader,
+	@SuppressWarnings("unchecked")
+	public static BaseJob createJob(ClassLoader classLoader,
 			Map<String, Object> map, JQlessClient client) {
 		try {
+			// Guarantee "data" is a Map
+			if (map.containsKey("data") && map.get("data") instanceof String) {
+				try {
+					Map<String, Object> data = JsonHelper.parseMap((String) map
+							.get("data"));
+					map.put("data", data);
+				} catch (Exception ex) {
+					_logger.error("Exception occurred while attempting to fix a data issue.  The string value "
+							+ map.get("data")
+							+ "could not be converted to a Map");
+				}
+			}
+
 			Attributes attrs = new Attributes(map);
 			Class<?> klazz = classLoader.loadClass(attrs.getKlassName());
 
-			@SuppressWarnings("rawtypes")
-			Constructor c = klazz.getConstructor(JQlessClient.class,
-					Attributes.class);
-			if (c == null)
-				c = klazz.getConstructor(JQlessClient.class);
+			ParameterizedType type = Types.newParameterizedType(
+					GenericJobFactory.class, klazz);
+			TypeLiteral<?> typeLiteral = TypeLiteral.get(type);
+			GenericJobFactory<BaseJob> jobFactory = (GenericJobFactory<BaseJob>) injector
+					.getInstance(Key.get(typeLiteral));
+			BaseJob job = jobFactory.create(client, attrs);
 
-			BaseJob job = (BaseJob) c.newInstance(client, attrs);
+			// Alternative Approach - Need to performance test these approaches
+			// MapBinder<String, GenericJobFactory<BaseJob>> mapBinder =
+			// MapBinder.newMapBinder(binder(), String.class,
+			// TypeLiteral<GenericJobFactory<BaseJob>>(){});
+			// mapBinder.addBinding("OfferWriterJob").to(TypeLiteral<GenericJobFactory<OfferWriterJob>>(){});
+			// mapBinder.addBinding("OtherJob").to(TypeLiteral<GenericJobFactory<OtherJob>>(){});
+			// Usage
+			// @Inject Map<String, GenericJobFactory<BaseJob>> factoryMap;
+			// return factoryMap.get("OfferWriterJob");
+
+			// @SuppressWarnings("rawtypes")
+			// Constructor c = klazz.getConstructor(JQlessClient.class,
+			// Attributes.class);
+			// if (c == null)
+			// c = klazz.getConstructor(JQlessClient.class);
+			//
+			// BaseJob job = (BaseJob) c.newInstance(client, attrs);
 
 			return job;
 		} catch (ClassNotFoundException e) {
 			_logger.error("ClassNotFoundException while attempting to create a Job - exception: "
 					+ e.getMessage() + e.getStackTrace());
-		} catch (NoSuchMethodException e) {
-			_logger.error("NoSuchMethodException while attempting to create a Job - exception: "
-					+ e.getMessage() + e.getStackTrace());
+			// } catch (NoSuchMethodException e) {
+			// _logger.error("NoSuchMethodException while attempting to create a Job - exception: "
+			// + e.getMessage() + e.getStackTrace());
 		} catch (SecurityException e) {
 			_logger.error("SecurityException while attempting to create a Job - exception: "
 					+ e.getMessage() + e.getStackTrace());
-		} catch (InstantiationException e) {
-			_logger.error("InstantiationException while attempting to create a Job - exception: "
-					+ e.getMessage() + e.getStackTrace());
-		} catch (IllegalAccessException e) {
-			_logger.error("IllegalAccessException while attempting to create a Job - exception: "
-					+ e.getMessage() + e.getStackTrace());
+			// } catch (InstantiationException e) {
+			// _logger.error("InstantiationException while attempting to create a Job - exception: "
+			// + e.getMessage() + e.getStackTrace());
+			// } catch (IllegalAccessException e) {
+			// _logger.error("IllegalAccessException while attempting to create a Job - exception: "
+			// + e.getMessage() + e.getStackTrace());
 		} catch (IllegalArgumentException e) {
 			_logger.error("IllegalArgumentException while attempting to create a Job - exception: "
 					+ e.getMessage() + e.getStackTrace());
-		} catch (InvocationTargetException e) {
-			_logger.error("InvocationTargetException while attempting to create a Job - exception: "
+			// } catch (InvocationTargetException e) {
+			// _logger.error("InvocationTargetException while attempting to create a Job - exception: "
+			// + e.getMessage() + e.getStackTrace());
+		} catch (Exception e) {
+			_logger.error("Exception while attempting to create a Job - exception: "
 					+ e.getMessage() + e.getStackTrace());
+
 		}
 
 		return null;
